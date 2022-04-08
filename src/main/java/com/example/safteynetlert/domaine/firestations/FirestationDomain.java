@@ -8,5 +8,6 @@ public interface FirestationDomain {
 
     void createFirestation(CreateFirestation createFirestation);
 
-    List<FirestationAggregate> getFirestationsByStationNumber(Integer firestationNumber);
+    List<FirestationAggregate> getFirestationsByStationNumber(
+            Integer firestationNumber);
 }

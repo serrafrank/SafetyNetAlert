@@ -1,6 +1,7 @@
 package com.example.safteynetlert.domaine.persons.command;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
 
 public record PersonAggregate(String firstName,
@@ -14,6 +15,10 @@ public record PersonAggregate(String firstName,
                               List<Medication> medications,
                               List<String> allergies) {
 
+    public Integer age() {
+        return Period.between(birthdate, LocalDate.now())
+                .getYears();
+    }
 
     public void addMedication(Medication medication) {
         this.medications.add(medication);

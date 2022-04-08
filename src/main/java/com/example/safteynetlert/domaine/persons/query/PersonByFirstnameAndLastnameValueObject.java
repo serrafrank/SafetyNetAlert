@@ -1,13 +1,11 @@
 package com.example.safteynetlert.domaine.persons.query;
 
 import com.example.safteynetlert.domaine.persons.command.Medication;
-import com.example.safteynetlert.infrastructure.models.MedicalRecord;
-import com.example.safteynetlert.infrastructure.models.Person;
+import com.example.safteynetlert.domaine.persons.command.PersonAggregate;
 
-import java.time.LocalDate;
 import java.util.List;
 
-public record PersonByFirstnameAndLastnameValueObject (
+public record PersonByFirstnameAndLastnameValueObject(
         String firstName,
         String lastName,
         String address,
@@ -18,17 +16,15 @@ public record PersonByFirstnameAndLastnameValueObject (
         List<Medication> medications,
         List<String> allergies) {
 
-
-    public PersonByFirstnameAndLastnameValueObject(Person p, MedicalRecord m) {
-
-        this(p.getFirstName(),
-             p.getLastName(),
-             p.getAddress(),
-             p.getCity(),
-             p.getZip(),
-             p.getEmail(),
-             m.getAge(),
-             m.getMedications(),
-             m.getAllergies());
+    public PersonByFirstnameAndLastnameValueObject(PersonAggregate p) {
+        this(p.firstName(),
+             p.lastName(),
+             p.address(),
+             p.city(),
+             p.zip(),
+             p.email(),
+             p.age(),
+             p.medications(),
+             p.allergies());
     }
 }

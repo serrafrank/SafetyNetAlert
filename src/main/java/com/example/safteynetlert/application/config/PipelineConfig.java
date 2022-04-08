@@ -1,11 +1,16 @@
 package com.example.safteynetlert.application.config;
 
-import com.example.safteynetlert.core.commandPipeline.*;
-import com.example.safteynetlert.core.eventPipeline.*;
-import com.example.safteynetlert.core.queryPipeline.AbstractQueryHandler;
-import com.example.safteynetlert.core.queryPipeline.QueryBus;
-import com.example.safteynetlert.core.queryPipeline.QueryBusImpl;
-import com.example.safteynetlert.core.queryPipeline.QueryMiddleware;
+import com.example.safteynetlert.application.core.commandPipeline.CommandBus;
+import com.example.safteynetlert.application.core.commandPipeline.CommandBusImpl;
+import com.example.safteynetlert.application.core.commandPipeline.CommandHandler;
+import com.example.safteynetlert.application.core.commandPipeline.CommandMiddleware;
+import com.example.safteynetlert.application.core.eventPipeline.EventBusImpl;
+import com.example.safteynetlert.application.core.eventPipeline.EventHandler;
+import com.example.safteynetlert.application.core.eventPipeline.EventMiddleware;
+import com.example.safteynetlert.application.core.queryPipeline.AbstractQueryHandler;
+import com.example.safteynetlert.application.core.queryPipeline.QueryBus;
+import com.example.safteynetlert.application.core.queryPipeline.QueryBusImpl;
+import com.example.safteynetlert.application.core.queryPipeline.QueryMiddleware;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +24,7 @@ public class PipelineConfig {
             ObjectProvider<CommandMiddleware> middlewares,
             ObjectProvider<EventHandler> eventHandlers,
             ObjectProvider<EventMiddleware> eventMiddlewares
-            ) {
+    ) {
 
         var eventBus = new EventBusImpl()
                 .handlers(eventHandlers::stream)
@@ -33,7 +38,7 @@ public class PipelineConfig {
 
     @Bean
     QueryBus queryBus(ObjectProvider<AbstractQueryHandler> queryHandlers,
-            ObjectProvider<QueryMiddleware> middlewares) {
+                      ObjectProvider<QueryMiddleware> middlewares) {
         return new QueryBusImpl()
                 .handlers(queryHandlers::stream)
                 .middlewares(middlewares::orderedStream);

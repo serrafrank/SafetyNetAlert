@@ -1,10 +1,12 @@
 package com.example.safteynetlert.domaine.persons.query;
 
-import com.example.safteynetlert.core.queryPipeline.AbstractQueryHandler;
+import com.example.safteynetlert.application.core.queryPipeline.AbstractQueryHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
+@Component
 public class GetPersonByFirstnameAndLastnameQueryHandler extends AbstractQueryHandler<GetPersonByFirstnameAndLastnameQuery, Optional<PersonByFirstnameAndLastnameValueObject>> {
 
     @Autowired

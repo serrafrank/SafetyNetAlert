@@ -6,7 +6,7 @@ import java.util.List;
 
 @Getter
 public class Data {
-    private List<Person> persons;
-    private List<Firestation> firestations;
-    private List<MedicalRecord> medicalrecords;
+    private List<PersonModel> persons;
+    private List<FirestationModel> firestations;
+    private List<MedicalRecordModel> medicalrecords;
 }
