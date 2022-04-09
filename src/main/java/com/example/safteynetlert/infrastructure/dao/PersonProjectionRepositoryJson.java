@@ -2,100 +2,140 @@ package com.example.safteynetlert.infrastructure.dao;
 
 import com.example.safteynetlert.domaine.persons.command.Id;
 import com.example.safteynetlert.domaine.persons.command.PersonAggregate;
+import com.example.safteynetlert.domaine.persons.query.ChildByAddressWithFamilyMembersValueObject;
+import com.example.safteynetlert.domaine.persons.query.PersonByFirestationValueObject;
 import com.example.safteynetlert.domaine.persons.query.PersonByFirstnameAndLastnameValueObject;
 import com.example.safteynetlert.domaine.persons.query.PersonProjectionRepository;
+import com.example.safteynetlert.infrastructure.models.FirestationModel;
 import com.example.safteynetlert.infrastructure.models.MedicalRecordModel;
 import com.example.safteynetlert.infrastructure.models.PersonModel;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
-
 @Repository
-public class PersonProjectionRepositoryJson implements PersonProjectionRepository {
+public class PersonProjectionRepositoryJson
+    implements PersonProjectionRepository {
+
+    private final DataStorage dataStorage;
+
 
     @Autowired
-    private DataStorage dataStorage;
+    public PersonProjectionRepositoryJson(DataStorage dataStorage) {
+        this.dataStorage = dataStorage;
+    }
 
     @Override
-    public Optional<PersonByFirstnameAndLastnameValueObject> GetPersonByFirstnameAndLastname(
-            String firstname,
-            String lastname) {
+    public Optional<PersonByFirstnameAndLastnameValueObject> getPersonByFirstnameAndLastname(
+        String firstname,
+        String lastname) {
 
         var id = new Id(firstname,
-                        lastname);
+            lastname);
 
         return getPersonAggregateById(id)
-                .map(PersonByFirstnameAndLastnameValueObject::new);
+            .map(PersonByFirstnameAndLastnameValueObject::new);
+    }
+
+    @Override
+    public Set<PersonByFirestationValueObject> getPersonByFirestation(Integer stationNumber) {
+        var addresses = this.dataStorage.getFirestationsByStationNumber(stationNumber)
+            .map(FirestationModel::getAddress)
+            .toList();
+
+        return getPersonAggregates().filter(p -> addresses.contains(p.address()))
+            .map(PersonByFirestationValueObject::new)
+            .collect(Collectors.toSet());
+    }
+
+    @Override
+    public Set<ChildByAddressWithFamilyMembersValueObject> getChildernByAddressWithFamilyMembers(String address) {
+
+        var persons = getPersonAggregateByAddress(address).collect(Collectors.toSet());
+
+        if(persons.isEmpty()){
+            return Set.of();
+        }
+
+        var children = persons.stream().filter(PersonAggregate::isMinor);
+        return children.map(c -> {
+            var family  = persons.stream().filter(p -> !p.id().equals(c.id())).collect(Collectors.toSet());
+            return new ChildByAddressWithFamilyMembersValueObject(c, family);
+        })
+        .collect(Collectors.toSet());
+    }
+
+    @Override
+    public Set<String> getPersonPhoneNumbersByFirestationNumber(Integer stationNumber) {
+        var address = dataStorage.getFirestationsByStationNumber(stationNumber)
+            .map(FirestationModel::getAddress)
+            .collect(Collectors.toSet());
+
+        Set<String> phoneNumers = new HashSet<>();
+        address.forEach(a -> phoneNumers.addAll(dataStorage.getPersonsByAddress(a)
+            .map(PersonModel::getPhone)
+            .collect(
+                Collectors.toSet())));
+
+        return phoneNumers;
     }
 
     private Optional<PersonAggregate> getPersonAggregateById(Id id) {
-        var medicalRecord = getMedicalRecordById(id);
-        var person = getPersonById(id);
+        var medicalRecord = this.dataStorage.getMedicalRecordById(id);
+        var person = this.dataStorage.getPersonById(id);
 
         if (medicalRecord.isPresent() && person.isPresent()) {
             return Optional.of(createPersonAggregate(person.get(),
-                                                     medicalRecord.get()));
+                medicalRecord.get()));
         }
 
         return Optional.empty();
     }
 
-    private Stream<PersonAggregate> getPersonAggregates() {
+    private Stream<PersonAggregate> getPersonAggregateByAddress(String address) {
+
         List<PersonAggregate> personAggregateList = new ArrayList<>();
 
-        getPersons().forEach(p -> getMedicalRecordById(p.getId())
+        this.dataStorage
+            .getPersonsByAddress(address)
+            .forEach(p -> this.dataStorage.getMedicalRecordById(p.getId())
                 .map(m -> createPersonAggregate(p, m))
                 .ifPresent(
-                        personAggregateList::add));
+                    personAggregateList::add));
 
         return personAggregateList.stream();
     }
 
-    private Stream<MedicalRecordModel> getMedicalRecords() {
-        return dataStorage.getData()
-                .getMedicalrecords()
-                .stream();
-    }
+    private Stream<PersonAggregate> getPersonAggregates() {
+        List<PersonAggregate> personAggregateList = new ArrayList<>();
 
-    private Stream<PersonModel> getPersons() {
-        return dataStorage.getData()
-                .getPersons()
-                .stream();
-    }
+        this.dataStorage.getPersons().forEach(p -> this.dataStorage.getMedicalRecordById(p.getId())
+            .map(m -> createPersonAggregate(p, m))
+            .ifPresent(
+                personAggregateList::add));
 
-    private Optional<MedicalRecordModel> getMedicalRecordById(Id id) {
-        return getMedicalRecords()
-                .filter(
-                        p -> p.getId().equals(id)
-                )
-                .findFirst();
-    }
-
-    private Optional<PersonModel> getPersonById(Id id) {
-        return getPersons()
-                .filter(
-                        p -> p.getId().equals(id)
-                )
-                .findFirst();
+        return personAggregateList.stream();
     }
 
     private PersonAggregate createPersonAggregate(PersonModel p,
                                                   MedicalRecordModel m) {
 
         return new PersonAggregate(p.getFirstName(),
-                                   p.getLastName(),
-                                   p.getAddress(),
-                                   p.getCity(),
-                                   p.getZip(),
-                                   p.getPhone(),
-                                   p.getEmail(),
-                                   m.getBirthdate(),
-                                   m.getMedications(),
-                                   m.getAllergies()
+            p.getLastName(),
+            p.getAddress(),
+            p.getCity(),
+            p.getZip(),
+            p.getPhone(),
+            p.getEmail(),
+            m.getBirthdate(),
+            m.getMedications(),
+            m.getAllergies()
         );
     }
 }

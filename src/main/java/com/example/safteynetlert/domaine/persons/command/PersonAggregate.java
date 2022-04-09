@@ -3,21 +3,28 @@ package com.example.safteynetlert.domaine.persons.command;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
-public record PersonAggregate(String firstName,
-                              String lastName,
-                              String address,
-                              String city,
-                              String zip,
-                              String phone,
-                              String email,
-                              LocalDate birthdate,
-                              List<Medication> medications,
-                              List<String> allergies) {
+public record PersonAggregate(
+      String firstName,
+      String lastName,
+    String address,
+    String city,
+    String zip,
+    String phone,
+    String email,
+    LocalDate birthdate,
+    List<Medication> medications,
+    List<String> allergies) {
+
+    public Id id(){
+        return new Id(firstName, lastName);
+    }
 
     public Integer age() {
         return Period.between(birthdate, LocalDate.now())
-                .getYears();
+            .getYears();
     }
 
     public void addMedication(Medication medication) {
@@ -32,4 +39,7 @@ public record PersonAggregate(String firstName,
         this.allergies.add(allergie);
     }
 
+    public boolean isMinor() {
+        return age() <= 18;
+    }
 }

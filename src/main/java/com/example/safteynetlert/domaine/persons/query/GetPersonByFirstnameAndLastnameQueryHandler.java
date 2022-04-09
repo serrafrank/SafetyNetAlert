@@ -1,23 +1,28 @@
 package com.example.safteynetlert.domaine.persons.query;
 
-import com.example.safteynetlert.application.core.queryPipeline.AbstractQueryHandler;
+import com.example.safteynetlert.application.core.query_pipeline.AbstractQueryHandler;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
-
 @Component
-public class GetPersonByFirstnameAndLastnameQueryHandler extends AbstractQueryHandler<GetPersonByFirstnameAndLastnameQuery, Optional<PersonByFirstnameAndLastnameValueObject>> {
+public class GetPersonByFirstnameAndLastnameQueryHandler
+    extends
+    AbstractQueryHandler<GetPersonByFirstnameAndLastnameQuery, Optional<PersonByFirstnameAndLastnameValueObject>> {
+
+    private final PersonProjectionRepository personProjectionRepository;
 
     @Autowired
-    private PersonProjectionRepository personProjectionRepository;
+    public GetPersonByFirstnameAndLastnameQueryHandler(PersonProjectionRepository personProjectionRepository) {
+        this.personProjectionRepository = personProjectionRepository;
+    }
 
     @Override
     public Optional<PersonByFirstnameAndLastnameValueObject> handler(
-            GetPersonByFirstnameAndLastnameQuery getPersonByFirstnameAndLastnameQuery) {
+        GetPersonByFirstnameAndLastnameQuery query) {
 
-        return personProjectionRepository.GetPersonByFirstnameAndLastname(
-                getPersonByFirstnameAndLastnameQuery.firstname(),
-                getPersonByFirstnameAndLastnameQuery.lastname());
+        return personProjectionRepository.getPersonByFirstnameAndLastname(
+            query.firstname(),
+            query.lastname());
     }
 }
