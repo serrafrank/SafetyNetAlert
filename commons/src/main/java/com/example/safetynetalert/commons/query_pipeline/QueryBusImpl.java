@@ -1,0 +1,44 @@
+package com.example.safetynetalert.commons.query_pipeline;
+
+import com.example.safetynetalert.commons.pipelines.pipeline_builder.Pipeline;
+import com.example.safetynetalert.commons.pipelines.pipeline_builder.PipelineBuilder;
+import com.example.safetynetalert.commons.pipelines.pipeline_builder.PipelineSupplier;
+import com.example.safetynetalert.commons.pipelines.pipeline_builder.validators.GenericValidation;
+import com.example.safetynetalert.commons.pipelines.pipeline_builder.validators.PipelineValidatorUtil;
+import com.example.safetynetalert.commons.query_pipeline.exceptions.QueryHandlerNotFoundException;
+import com.example.safetynetalert.commons.query_pipeline.exceptions.QueryHasMultipleHandlersException;
+
+public class QueryBusImpl
+    implements QueryBus {
+
+    private final Pipeline genericPipeline = new PipelineBuilder();
+
+    @Override
+    public QueryBusImpl handlers(PipelineSupplier.Supply<QueryHandler<? extends Query, ?>> QueryHandlers) {
+        this.genericPipeline.handlers(QueryHandlers);
+        return this;
+    }
+
+    @Override
+    public QueryBusImpl middlewares(PipelineSupplier.Supply<QueryMiddleware> middlewares) {
+        this.genericPipeline.middlewares(middlewares);
+        return this;
+    }
+
+    @Override
+    public <TQuery extends Query, TReturn> TReturn dispatch(TQuery query) {
+        return this.genericPipeline.submit(query)
+            .validate(handlers -> GenericValidation.from(
+                handlers)
+                .expected(PipelineValidatorUtil.notEmpty())
+                .orThrow(() -> new QueryHandlerNotFoundException(
+                    query)))
+            .validate(handlers -> GenericValidation.from(
+                handlers)
+                .expected(PipelineValidatorUtil.onlyOne())
+                .orThrow(() -> new QueryHasMultipleHandlersException(
+                    query,
+                    handlers)))
+            .first();
+    }
+}
