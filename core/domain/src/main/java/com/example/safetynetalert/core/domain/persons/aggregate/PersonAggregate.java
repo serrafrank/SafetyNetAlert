@@ -2,7 +2,6 @@ package com.example.safetynetalert.core.domain.persons.aggregate;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.List;
 
 public record PersonAggregate(
     String firstName,
@@ -13,8 +12,7 @@ public record PersonAggregate(
     String phone,
     String email,
     LocalDate birthdate,
-    List<Medication> medications,
-    List<String> allergies) {
+    MedicalRecord medicalRecord) {
 
     public Id id() {
         return new Id(firstName, lastName);
@@ -26,15 +24,15 @@ public record PersonAggregate(
     }
 
     public void addMedication(Medication medication) {
-        this.medications.add(medication);
+        this.medicalRecord.medications().add(medication);
     }
 
     public void addMedication(String drug, String dose) {
-        this.medications.add(new Medication(drug, dose));
+        this.medicalRecord.medications().add(new Medication(drug, dose));
     }
 
     public void addAllergie(String allergie) {
-        this.allergies.add(allergie);
+        this.medicalRecord.allergies().add(allergie);
     }
 
     public boolean isMinor() {

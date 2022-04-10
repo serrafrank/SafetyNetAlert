@@ -1,6 +1,7 @@
 package com.example.safetynetalert.core.infrastructure.users.models;
 
 import com.example.safetynetalert.core.domain.persons.aggregate.Id;
+import com.example.safetynetalert.core.domain.persons.aggregate.MedicalRecord;
 import com.example.safetynetalert.core.domain.persons.aggregate.Medication;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import java.time.LocalDate;
@@ -62,5 +63,9 @@ public class MedicalRecordModel {
     @JsonSetter("allergies")
     public void addAllergies(List<String> allergies) {
         this.allergies.addAll(allergies);
+    }
+
+    public MedicalRecord toMedicalRecord() {
+        return new MedicalRecord(getMedications(), getAllergies());
     }
 }

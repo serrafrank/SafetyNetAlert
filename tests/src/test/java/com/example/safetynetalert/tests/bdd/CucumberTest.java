@@ -30,7 +30,6 @@ public class CucumberTest {
         @Autowired
         private PersonAggregatorRepository repository;
 
-
         private void resetDatabase() {
 
         }

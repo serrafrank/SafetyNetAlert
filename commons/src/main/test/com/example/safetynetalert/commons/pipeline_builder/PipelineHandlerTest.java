@@ -31,9 +31,8 @@ class PipelineHandlerTest {
             .handlers(() -> Stream.of(new GenericPipelineTypeHandler()));
         var request = new FooRequest<>(new BarRequest());
 
-
         List<PipelineHandler> result = requestBus.submit(request)
-                .handlers();
+            .handlers();
         assertThat(result.size()).isEqualTo(1);
         assertThat(result.get(0).getClass()).isEqualTo(expectedHandler.getClass());
     }
@@ -47,9 +46,8 @@ class PipelineHandlerTest {
             .handlers(() -> Stream.of(new GenericPipelineTypeHandler()));
         var request = new FooRequest<>(new BarRequest());
 
-
-       PipelineHandler result = requestBus.submit(request)
-                .handler();
+        PipelineHandler result = requestBus.submit(request)
+            .handler();
         assertThat(result.getClass()).isEqualTo(expectedHandler.getClass());
     }
 

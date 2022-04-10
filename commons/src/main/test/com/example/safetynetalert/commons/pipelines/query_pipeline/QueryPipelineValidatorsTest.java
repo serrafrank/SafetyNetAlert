@@ -41,7 +41,6 @@ class QueryPipelineValidatorsTest {
             .handlers(() -> Stream.of(hiHandler,
                 pingSaverHandler));
 
-
         // when
         queryBus.dispatch(new PingRequest("hi"));
 
@@ -86,7 +85,8 @@ class QueryPipelineValidatorsTest {
 
         // then
         assertThat(e)
-            .hasMessage("Query PingRequest must have a single matching handler, but found 2 (Pong1Handler, Pong2Handler)");
+            .hasMessage(
+                "Query PingRequest must have a single matching handler, but found 2 (Pong1Handler, Pong2Handler)");
     }
 
     private record PingRequest(String message)
@@ -101,7 +101,6 @@ class QueryPipelineValidatorsTest {
         extends AbstractQueryHandler<PingRequest, String> {
 
         private final Collection<PingRequest> receivedPingRequests = new ArrayList<>();
-
 
         @Override
         public String handler(PingRequest request) {

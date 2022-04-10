@@ -6,8 +6,10 @@ import com.example.safetynetalert.core.domain.persons.query.GetChildrenByAddress
 import com.example.safetynetalert.core.domain.persons.query.GetPersonByFirestationQuery;
 import com.example.safetynetalert.core.domain.persons.query.GetPersonByFirstnameAndLastnameQuery;
 import com.example.safetynetalert.core.domain.persons.query.GetPersonPhoneNumbersByFirestationNumberQuery;
+import com.example.safetynetalert.core.domain.persons.query.GetPersonsWithMedicalRecordByFirestationNumbersQuery;
 import com.example.safetynetalert.core.domain.persons.query.PersonByFirestationValueObject;
 import com.example.safetynetalert.core.domain.persons.query.PersonByFirstnameAndLastnameValueObject;
+import com.example.safetynetalert.core.domain.persons.query.PersonWithMedicalRecordsValueObject;
 import java.util.Optional;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +36,8 @@ public class QueryUseCaseImpl
     }
 
     @Override
-    public Set<PersonByFirestationValueObject> getPersonsByFirestation(Integer firestationNubmer) {
-        return queryBus.dispatch(new GetPersonByFirestationQuery(firestationNubmer));
+    public Set<PersonByFirestationValueObject> getPersonsByFirestation(Integer station) {
+        return queryBus.dispatch(new GetPersonByFirestationQuery(station));
     }
 
     @Override
@@ -45,7 +47,13 @@ public class QueryUseCaseImpl
     }
 
     @Override
-    public Set<String> getPersonPhoneNumbersByFirestationNumber(Integer firestationNubmer) {
-        return queryBus.dispatch(new GetPersonPhoneNumbersByFirestationNumberQuery(firestationNubmer));
+    public Set<String> getPersonPhoneNumbersByFirestationNumber(Integer station) {
+        return queryBus.dispatch(new GetPersonPhoneNumbersByFirestationNumberQuery(station));
+    }
+
+    @Override
+    public Set<PersonWithMedicalRecordsValueObject> getPersonWithMedicalRecordsByFirestationNumber(
+        Set<Integer> stations) {
+        return queryBus.dispatch(new GetPersonsWithMedicalRecordByFirestationNumbersQuery(stations));
     }
 }

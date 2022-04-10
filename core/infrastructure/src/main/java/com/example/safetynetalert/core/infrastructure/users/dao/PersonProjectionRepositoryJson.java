@@ -6,6 +6,7 @@ import com.example.safetynetalert.core.domain.persons.query.ChildByAddressWithFa
 import com.example.safetynetalert.core.domain.persons.query.PersonByFirestationValueObject;
 import com.example.safetynetalert.core.domain.persons.query.PersonByFirstnameAndLastnameValueObject;
 import com.example.safetynetalert.core.domain.persons.query.PersonProjectionRepository;
+import com.example.safetynetalert.core.domain.persons.query.PersonWithMedicalRecordsValueObject;
 import com.example.safetynetalert.core.infrastructure.users.models.FirestationModel;
 import com.example.safetynetalert.core.infrastructure.users.models.MedicalRecordModel;
 import com.example.safetynetalert.core.infrastructure.users.models.PersonModel;
@@ -88,6 +89,19 @@ public class PersonProjectionRepositoryJson
         return phoneNumers;
     }
 
+    @Override
+    public Set<PersonWithMedicalRecordsValueObject> getPersonsWithMedicalRecordByFirestationNumbersQuery(
+        Set<Integer> stations) {
+
+        var addresses = dataStorage.getFirestationsByStationNumbers(stations)
+            .map(FirestationModel::getAddress)
+            .collect(Collectors.toSet());
+
+        return getPersonAggregateByAddresses(addresses)
+            .map(PersonWithMedicalRecordsValueObject::new)
+            .collect(Collectors.toSet());
+    }
+
     private Optional<PersonAggregate> getPersonAggregateById(Id id) {
         var medicalRecord = this.dataStorage.getMedicalRecordById(id);
         var person = this.dataStorage.getPersonById(id);
@@ -102,14 +116,18 @@ public class PersonProjectionRepositoryJson
 
     private Stream<PersonAggregate> getPersonAggregateByAddress(String address) {
 
+        return getPersonAggregateByAddresses(Set.of(address));
+    }
+
+    private Stream<PersonAggregate> getPersonAggregateByAddresses(Set<String> address) {
+
         List<PersonAggregate> personAggregateList = new ArrayList<>();
 
         this.dataStorage
-            .getPersonsByAddress(address)
+            .getPersonsByAddresses(address)
             .forEach(p -> this.dataStorage.getMedicalRecordById(p.getId())
                 .map(m -> createPersonAggregate(p, m))
-                .ifPresent(
-                    personAggregateList::add));
+                .ifPresent(personAggregateList::add));
 
         return personAggregateList.stream();
     }
@@ -136,8 +154,7 @@ public class PersonProjectionRepositoryJson
             p.getPhone(),
             p.getEmail(),
             m.getBirthdate(),
-            m.getMedications(),
-            m.getAllergies()
+            m.toMedicalRecord()
         );
     }
 }

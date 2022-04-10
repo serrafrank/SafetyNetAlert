@@ -23,7 +23,7 @@ public record PersonByFirstnameAndLastnameValueObject(
             p.zip(),
             p.email(),
             p.age(),
-            p.medications(),
-            p.allergies());
+            p.medicalRecord().medications(),
+            p.medicalRecord().allergies());
     }
 }

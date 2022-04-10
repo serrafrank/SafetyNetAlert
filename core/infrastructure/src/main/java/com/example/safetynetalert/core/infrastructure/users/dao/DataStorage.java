@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,10 +19,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class DataStorage {
 
-    private final DataModel data;
-
     @Value("${safe-net-alert.data-file}")
     private static final String DATA_FILE = "data.json";
+    private final DataModel data;
 
     public DataStorage() throws IOException {
 
@@ -44,17 +44,19 @@ public class DataStorage {
 
     public Optional<PersonModel> getPersonById(Id id) {
         return getPersons()
-            .filter(
-                p -> p.getId().equals(id)
-            )
+            .filter(p -> p.getId().equals(id))
             .findFirst();
     }
 
     public Stream<PersonModel> getPersonsByAddress(String address) {
+        return getPersonsByAddresses(Set.of(address));
+    }
+
+    public Stream<PersonModel> getPersonsByAddresses(Set<String> addresses) {
         return data
             .getPersons()
             .stream()
-            .filter(p -> p.getAddress().equals(address));
+            .filter(p -> addresses.contains(p.getAddress()));
     }
 
     public Stream<FirestationModel> getFirestations() {
@@ -64,13 +66,21 @@ public class DataStorage {
     }
 
     public Stream<FirestationModel> getFirestationsByStationNumber(Integer stationNumber) {
+        return getFirestationsByStationNumbers(Set.of(stationNumber));
+    }
+
+    public Stream<FirestationModel> getFirestationsByStationNumbers(Set<Integer> stationNumbers) {
         return getFirestations()
-            .filter(f -> f.getStation().equals(stationNumber));
+            .filter(f -> stationNumbers.contains(f.getStation()));
     }
 
     public Stream<FirestationModel> getFirestationsByAddress(String address) {
+        return getFirestationsByAddresses(Set.of(address));
+    }
+
+    public Stream<FirestationModel> getFirestationsByAddresses(Set<String> address) {
         return getFirestations()
-            .filter(f -> f.getAddress().equals(address));
+            .filter(f -> address.contains(f.getAddress()));
     }
 
     public Stream<MedicalRecordModel> getMedicalRecords() {
@@ -81,9 +91,7 @@ public class DataStorage {
 
     public Optional<MedicalRecordModel> getMedicalRecordById(Id id) {
         return getMedicalRecords()
-            .filter(
-                p -> p.getId().equals(id)
-            )
+            .filter(p -> p.getId().equals(id))
             .findFirst();
     }
 }

@@ -48,11 +48,9 @@ class QueryPipelineMiddlewareTest {
             }
         }
 
-
         QueryBus queryBus = new QueryBusImpl()
             .handlers(() -> Stream.of(new ReturnTwoPipelineHandler()))
             .middlewares(() -> Stream.of(firstMiddleware, secondMiddleware));
-
 
         // when
         List<String> responseList = queryBus.dispatch(new PingRequest());
