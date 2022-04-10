@@ -1,6 +1,6 @@
 package com.example.safetynetalert.core.application;
 
-import com.example.safetynetalert.commons.query_pipeline.QueryBus;
+import com.example.safetynetalert.commons.pipelines.query_pipeline.QueryBus;
 import com.example.safetynetalert.core.domain.persons.query.ChildByAddressWithFamilyMembersValueObject;
 import com.example.safetynetalert.core.domain.persons.query.GetChildrenByAddressWithFamilyMembersQuery;
 import com.example.safetynetalert.core.domain.persons.query.GetPersonByFirestationQuery;

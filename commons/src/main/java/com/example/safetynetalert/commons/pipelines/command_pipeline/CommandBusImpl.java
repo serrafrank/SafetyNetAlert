@@ -1,14 +1,14 @@
 package com.example.safetynetalert.commons.pipelines.command_pipeline;
 
+import com.example.safetynetalert.commons.pipeline_builder.Pipeline;
+import com.example.safetynetalert.commons.pipeline_builder.PipelineBuilder;
+import com.example.safetynetalert.commons.pipeline_builder.PipelineSupplier.Supply;
+import com.example.safetynetalert.commons.pipeline_builder.validators.GenericValidation;
+import com.example.safetynetalert.commons.pipeline_builder.validators.PipelineValidatorUtil;
 import com.example.safetynetalert.commons.pipelines.command_pipeline.exceptions.CommandHandlerNotFoundException;
 import com.example.safetynetalert.commons.pipelines.command_pipeline.exceptions.CommandHasMultipleHandlersException;
 import com.example.safetynetalert.commons.pipelines.event_pipeline.Event;
 import com.example.safetynetalert.commons.pipelines.event_pipeline.EventBus;
-import com.example.safetynetalert.commons.pipelines.pipeline_builder.Pipeline;
-import com.example.safetynetalert.commons.pipelines.pipeline_builder.PipelineBuilder;
-import com.example.safetynetalert.commons.pipelines.pipeline_builder.PipelineSupplier.Supply;
-import com.example.safetynetalert.commons.pipelines.pipeline_builder.validators.GenericValidation;
-import com.example.safetynetalert.commons.pipelines.pipeline_builder.validators.PipelineValidatorUtil;
 
 public class CommandBusImpl
     implements CommandBus {

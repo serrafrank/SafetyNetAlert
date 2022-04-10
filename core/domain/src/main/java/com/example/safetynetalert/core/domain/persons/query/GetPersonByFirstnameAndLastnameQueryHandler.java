@@ -1,6 +1,6 @@
 package com.example.safetynetalert.core.domain.persons.query;
 
-import com.example.safetynetalert.commons.query_pipeline.AbstractQueryHandler;
+import com.example.safetynetalert.commons.pipelines.query_pipeline.AbstractQueryHandler;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
