@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @NoArgsConstructor
-public class PersonWithMedicalRecordsResource {
+public class PersonWithMedicalRecordsResponse {
 
     @Getter
     private String firstName;
@@ -22,7 +22,7 @@ public class PersonWithMedicalRecordsResource {
     @Getter
     private MedicalRecordResource medicalRecord;
 
-    public PersonWithMedicalRecordsResource(PersonWithMedicalRecordsValueObject m) {
+    public PersonWithMedicalRecordsResponse(PersonWithMedicalRecordsValueObject m) {
         this.firstName = m.firstName();
         this.lastName = m.lastName();
         this.age = m.age();

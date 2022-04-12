@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.List;
 
 public record PersonAggregate(
         String firstName,
@@ -16,11 +17,29 @@ public record PersonAggregate(
         String phone,
         String email,
         LocalDate birthdate,
-        MedicalRecord medicalRecord) {
+        Medication.MedicalRecord medicalRecord) {
 
     public PersonAggregate {
         PrettyValidation.test(firstName).isNot(StringUtils::isBlank).orThrow(BlankArgumentException::new);
         PrettyValidation.test(lastName).isNot(StringUtils::isBlank).orThrow(BlankArgumentException::new);
+    }
+
+    public PersonAggregate(
+            String firstName,
+            String lastName,
+            String address,
+            String city,
+            String zip,
+            String phone, String email) {
+        this(firstName, lastName, address, city, zip, phone, email, null, null);
+    }
+
+    public PersonAggregate(
+            String firstName,
+            String lastName,
+            LocalDate birthdate,
+            Medication.MedicalRecord medicalRecord) {
+        this(firstName, lastName, null, null, null, null, null, birthdate, medicalRecord);
     }
 
     public Id id() {
@@ -46,5 +65,45 @@ public record PersonAggregate(
 
     public boolean isMinor() {
         return age() <= 18;
+    }
+
+    public static record Medication(
+            String drug,
+            String dose) {
+
+        public Medication {
+            PrettyValidation.test(drug).isNot(StringUtils::isBlank).orThrow(BlankArgumentException::new);
+            PrettyValidation.test(dose).isNot(StringUtils::isBlank).orThrow(BlankArgumentException::new);
+        }
+
+        public static record MedicalRecord(List<Medication> medications,
+                                           List<String> allergies) {
+
+        }
+    }
+
+    public static record Id(String id) {
+
+        public Id {
+            PrettyValidation.test(id).isNot(StringUtils::isBlank).orThrow(BlankArgumentException::new);
+        }
+
+        public Id(String... elements) {
+            this(String.join(":", elements));
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+
+            Id testerId = (Id) o;
+
+            return id.equals(testerId.id());
+        }
     }
 }

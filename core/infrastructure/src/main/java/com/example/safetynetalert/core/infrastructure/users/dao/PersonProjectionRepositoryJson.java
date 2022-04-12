@@ -1,6 +1,5 @@
 package com.example.safetynetalert.core.infrastructure.users.dao;
 
-import com.example.safetynetalert.core.domain.persons.aggregate.Id;
 import com.example.safetynetalert.core.domain.persons.aggregate.PersonAggregate;
 import com.example.safetynetalert.core.domain.persons.query.*;
 import com.example.safetynetalert.core.infrastructure.users.models.FireStationModel;
@@ -29,7 +28,7 @@ public class PersonProjectionRepositoryJson
             String firstname,
             String lastname) {
 
-        var id = new Id(firstname,
+        var id = new PersonAggregate.Id(firstname,
                 lastname);
 
         return getPersonAggregateById(id)
@@ -38,7 +37,7 @@ public class PersonProjectionRepositoryJson
 
     @Override
     public Set<PersonByFireStationValueObject> getPersonByFireStation(Integer stationNumber) {
-        var addresses = this.dataStorage.getFirestationsByStationNumber(stationNumber)
+        var addresses = this.dataStorage.getFireStationsByStationNumber(stationNumber)
                 .map(FireStationModel::getAddress)
                 .toList();
 
@@ -69,7 +68,7 @@ public class PersonProjectionRepositoryJson
 
     @Override
     public Set<String> getPersonPhoneNumbersByFireStationNumber(Integer stationNumber) {
-        var address = dataStorage.getFirestationsByStationNumber(stationNumber)
+        var address = dataStorage.getFireStationsByStationNumber(stationNumber)
                 .map(FireStationModel::getAddress)
                 .collect(Collectors.toSet());
 
@@ -86,7 +85,7 @@ public class PersonProjectionRepositoryJson
     public Set<PersonWithMedicalRecordsValueObject> getPersonsWithMedicalRecordByFireStationNumbersQuery(
             Set<Integer> stations) {
 
-        var addresses = dataStorage.getFirestationsByStationNumbers(stations)
+        var addresses = dataStorage.getFireStationsByStationNumbers(stations)
                 .map(FireStationModel::getAddress)
                 .collect(Collectors.toSet());
 
@@ -95,7 +94,15 @@ public class PersonProjectionRepositoryJson
                 .collect(Collectors.toSet());
     }
 
-    private Optional<PersonAggregate> getPersonAggregateById(Id id) {
+    @Override
+    public Set<String> getEmailsByCity(String city) {
+        return dataStorage.getPersons()
+                .filter(p -> p.getCity().equals(city))
+                .map(PersonModel::getEmail)
+                .collect(Collectors.toSet());
+    }
+
+    private Optional<PersonAggregate> getPersonAggregateById(PersonAggregate.Id id) {
         var medicalRecord = this.dataStorage.getMedicalRecordById(id);
         var person = this.dataStorage.getPersonById(id);
 

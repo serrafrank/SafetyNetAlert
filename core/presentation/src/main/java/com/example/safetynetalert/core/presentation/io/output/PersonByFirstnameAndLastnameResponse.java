@@ -1,13 +1,13 @@
 package com.example.safetynetalert.core.presentation.io.output;
 
-import com.example.safetynetalert.core.domain.persons.aggregate.Medication;
+import com.example.safetynetalert.core.domain.persons.aggregate.PersonAggregate;
 import com.example.safetynetalert.core.domain.persons.query.PersonByFirstnameAndLastnameValueObject;
 import lombok.Getter;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class PersonByFirstnameAndLastnameResource {
+public class PersonByFirstnameAndLastnameResponse {
 
     @Getter
     private final String firstName;
@@ -36,7 +36,7 @@ public class PersonByFirstnameAndLastnameResource {
     @Getter
     private final List<String> allergies;
 
-    public PersonByFirstnameAndLastnameResource(PersonByFirstnameAndLastnameValueObject person) {
+    public PersonByFirstnameAndLastnameResponse(PersonByFirstnameAndLastnameValueObject person) {
 
         this.firstName = person.firstName();
         this.lastName = person.lastName();
@@ -47,7 +47,7 @@ public class PersonByFirstnameAndLastnameResource {
         this.age = person.age();
         this.medications = person.medications()
                 .stream()
-                .map(Medication::toString)
+                .map(PersonAggregate.Medication::toString)
                 .collect(Collectors.toList());
         this.allergies = person.allergies();
     }

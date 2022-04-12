@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class AllPersonsByFireStationNumberResource {
+public class AllPersonsByFireStationNumberResponse {
 
     @Getter
     private final Set<PersonByFireStationNumberDto> persons;
@@ -15,7 +15,7 @@ public class AllPersonsByFireStationNumberResource {
     @Getter
     private final Long numberOfChildren;
 
-    public AllPersonsByFireStationNumberResource(Collection<PersonByFireStationValueObject> personsByFireStationNumber) {
+    public AllPersonsByFireStationNumberResponse(Collection<PersonByFireStationValueObject> personsByFireStationNumber) {
         persons = personsByFireStationNumber.stream()
                 .map(PersonByFireStationNumberDto::new)
                 .collect(

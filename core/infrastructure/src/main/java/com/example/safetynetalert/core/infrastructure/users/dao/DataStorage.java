@@ -1,7 +1,7 @@
 package com.example.safetynetalert.core.infrastructure.users.dao;
 
 import com.example.safetynetalert.commons.pretty_validator.PrettyValidation;
-import com.example.safetynetalert.core.domain.persons.aggregate.Id;
+import com.example.safetynetalert.core.domain.persons.aggregate.PersonAggregate;
 import com.example.safetynetalert.core.infrastructure.users.models.DataModel;
 import com.example.safetynetalert.core.infrastructure.users.models.FireStationModel;
 import com.example.safetynetalert.core.infrastructure.users.models.MedicalRecordModel;
@@ -40,7 +40,7 @@ public class DataStorage {
                 .stream();
     }
 
-    public Optional<PersonModel> getPersonById(Id id) {
+    public Optional<PersonModel> getPersonById(PersonAggregate.Id id) {
         return getPersons()
                 .filter(p -> p.getId().equals(id))
                 .findFirst();
@@ -57,27 +57,27 @@ public class DataStorage {
                 .filter(p -> addresses.contains(p.getAddress()));
     }
 
-    public Stream<FireStationModel> getFirestations() {
+    public Stream<FireStationModel> getFireStations() {
         return data
                 .getFirestations()
                 .stream();
     }
 
-    public Stream<FireStationModel> getFirestationsByStationNumber(Integer stationNumber) {
-        return getFirestationsByStationNumbers(Set.of(stationNumber));
+    public Stream<FireStationModel> getFireStationsByStationNumber(Integer stationNumber) {
+        return getFireStationsByStationNumbers(Set.of(stationNumber));
     }
 
-    public Stream<FireStationModel> getFirestationsByStationNumbers(Set<Integer> stationNumbers) {
-        return getFirestations()
+    public Stream<FireStationModel> getFireStationsByStationNumbers(Set<Integer> stationNumbers) {
+        return getFireStations()
                 .filter(f -> stationNumbers.contains(f.getStation()));
     }
 
-    public Stream<FireStationModel> getFirestationsByAddress(String address) {
-        return getFirestationsByAddresses(Set.of(address));
+    public Stream<FireStationModel> getFireStationsByAddress(String address) {
+        return getFireStationsByAddresses(Set.of(address));
     }
 
-    public Stream<FireStationModel> getFirestationsByAddresses(Set<String> address) {
-        return getFirestations()
+    public Stream<FireStationModel> getFireStationsByAddresses(Set<String> address) {
+        return getFireStations()
                 .filter(f -> address.contains(f.getAddress()));
     }
 
@@ -87,7 +87,7 @@ public class DataStorage {
                 .stream();
     }
 
-    public Optional<MedicalRecordModel> getMedicalRecordById(Id id) {
+    public Optional<MedicalRecordModel> getMedicalRecordById(PersonAggregate.Id id) {
         return getMedicalRecords()
                 .filter(p -> p.getId().equals(id))
                 .findFirst();

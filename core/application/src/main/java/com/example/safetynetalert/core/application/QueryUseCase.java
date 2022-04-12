@@ -21,4 +21,6 @@ public interface QueryUseCase {
     Set<String> getPersonPhoneNumbersByFireStationNumber(Integer station);
 
     Set<PersonWithMedicalRecordsValueObject> getPersonWithMedicalRecordsByFireStationNumber(Set<Integer> stations);
+
+    Set<String> getEmailsByCity(String city);
 }

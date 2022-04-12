@@ -17,4 +17,6 @@ public interface PersonProjectionRepository {
 
     Set<PersonWithMedicalRecordsValueObject> getPersonsWithMedicalRecordByFireStationNumbersQuery(
             Set<Integer> stations);
+
+    Set<String> getEmailsByCity(String city);
 }

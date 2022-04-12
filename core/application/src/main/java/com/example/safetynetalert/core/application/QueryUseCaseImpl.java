@@ -49,4 +49,9 @@ public class QueryUseCaseImpl
             Set<Integer> stations) {
         return queryBus.dispatch(new GetPersonsWithMedicalRecordByFireStationNumbersQuery(stations));
     }
+
+    @Override
+    public Set<String> getEmailsByCity(String city) {
+        return queryBus.dispatch(new GetEmailsByCityQuery(city));
+    }
 }

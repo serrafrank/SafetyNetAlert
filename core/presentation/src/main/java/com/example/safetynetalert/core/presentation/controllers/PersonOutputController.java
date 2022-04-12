@@ -4,10 +4,12 @@ import com.example.safetynetalert.core.application.QueryUseCase;
 import com.example.safetynetalert.core.domain.exceptions.GenericNotFoundException;
 import com.example.safetynetalert.core.domain.persons.query.PersonByFirstnameAndLastnameValueObject;
 import com.example.safetynetalert.core.domain.persons.query.PersonWithMedicalRecordsValueObject;
-import com.example.safetynetalert.core.presentation.io.output.ChildByAddressWithFamilyMembersResourse;
-import com.example.safetynetalert.core.presentation.io.output.PersonByFirstnameAndLastnameResource;
-import com.example.safetynetalert.core.presentation.io.output.PersonWithMedicalRecordsResource;
+import com.example.safetynetalert.core.presentation.io.output.ChildByAddressWithFamilyMembersResponse;
+import com.example.safetynetalert.core.presentation.io.output.PersonByFirstnameAndLastnameResponse;
+import com.example.safetynetalert.core.presentation.io.output.PersonWithMedicalRecordsResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,7 +31,7 @@ public class PersonOutputController {
     }
 
     @GetMapping("personInfo")
-    public PersonByFirstnameAndLastnameResource getPersonInfo(
+    public ResponseEntity<PersonByFirstnameAndLastnameResponse> getPersonInfo(
             @RequestParam("firstName") String firstName,
             @RequestParam("lastName") String lastName) {
 
@@ -39,27 +41,39 @@ public class PersonOutputController {
                         lastName)
                 .orElseThrow(GenericNotFoundException::new);
 
-        return new PersonByFirstnameAndLastnameResource(person);
+        var resource = new PersonByFirstnameAndLastnameResponse(person);
+
+        return new ResponseEntity<>(resource, HttpStatus.OK);
     }
 
     @GetMapping("childAlert")
-    public Set<ChildByAddressWithFamilyMembersResourse> getChildrenByAddressWithFamilyMembers(@RequestParam("address") String address) {
+    public ResponseEntity<Set<ChildByAddressWithFamilyMembersResponse>> getChildrenByAddressWithFamilyMembers(@RequestParam("address") String address) {
 
-        return queryUseCaser.getChildrenByAddressWithFamilyMembers(address)
-                .stream().map(ChildByAddressWithFamilyMembersResourse::new)
+        var resource = queryUseCaser.getChildrenByAddressWithFamilyMembers(address)
+                .stream().map(ChildByAddressWithFamilyMembersResponse::new)
                 .collect(Collectors.toSet());
+
+        return new ResponseEntity<>(resource, HttpStatus.OK);
     }
 
     @GetMapping("flood/stations")
-    public Map<String, Set<PersonWithMedicalRecordsResource>> getFamilyWithMedicalRecordByFirestationNumber(
+    public ResponseEntity<Map<String, Set<PersonWithMedicalRecordsResponse>>> getFamilyWithMedicalRecordByFirestationNumber(
             @RequestParam("stations") Set<Integer> stations) {
 
         Set<PersonWithMedicalRecordsValueObject> personsWithMedicalRecords = queryUseCaser.getPersonWithMedicalRecordsByFireStationNumber(
                 stations);
 
-        return personsWithMedicalRecords.stream()
+        var resource = personsWithMedicalRecords.stream()
                 .collect(groupingBy(PersonWithMedicalRecordsValueObject::address,
-                        Collectors.mapping(PersonWithMedicalRecordsResource::new,
+                        Collectors.mapping(PersonWithMedicalRecordsResponse::new,
                                 Collectors.toSet())));
+
+        return new ResponseEntity<>(resource, HttpStatus.OK);
+    }
+
+    @GetMapping("communityEmail")
+    public ResponseEntity<Set<String>> getEmailsByCity(@RequestParam("city") String city) {
+        var resource = queryUseCaser.getEmailsByCity(city);
+        return new ResponseEntity<>(resource, HttpStatus.OK);
     }
 }

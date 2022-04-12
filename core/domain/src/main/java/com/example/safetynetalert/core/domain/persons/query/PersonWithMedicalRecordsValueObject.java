@@ -1,7 +1,5 @@
 package com.example.safetynetalert.core.domain.persons.query;
 
-import com.example.safetynetalert.core.domain.persons.aggregate.MedicalRecord;
-import com.example.safetynetalert.core.domain.persons.aggregate.Medication;
 import com.example.safetynetalert.core.domain.persons.aggregate.PersonAggregate;
 
 import java.util.List;
@@ -24,7 +22,7 @@ public record PersonWithMedicalRecordsValueObject(String firstName,
     public record MedicalRecordValueObject(List<MedicationValueObject> medications,
                                            List<String> allergies) {
 
-        public MedicalRecordValueObject(MedicalRecord medicalRecord) {
+        public MedicalRecordValueObject(PersonAggregate.Medication.MedicalRecord medicalRecord) {
             this(medicalRecord
                             .medications()
                             .stream()
@@ -38,7 +36,7 @@ public record PersonWithMedicalRecordsValueObject(String firstName,
             String drug,
             String dose) {
 
-        public MedicationValueObject(Medication medication) {
+        public MedicationValueObject(PersonAggregate.Medication medication) {
             this(medication.drug(), medication.dose());
         }
     }

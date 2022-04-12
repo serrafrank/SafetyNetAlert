@@ -1,6 +1,5 @@
 package com.example.safetynetalert.core.domain.persons.query;
 
-import com.example.safetynetalert.core.domain.persons.aggregate.Medication;
 import com.example.safetynetalert.core.domain.persons.aggregate.PersonAggregate;
 
 import java.util.List;
@@ -13,7 +12,7 @@ public record PersonByFirstnameAndLastnameValueObject(
         String zip,
         String email,
         Integer age,
-        List<Medication> medications,
+        List<PersonAggregate.Medication> medications,
         List<String> allergies) {
 
     public PersonByFirstnameAndLastnameValueObject(PersonAggregate p) {

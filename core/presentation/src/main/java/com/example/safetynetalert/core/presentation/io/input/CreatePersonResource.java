@@ -1,13 +1,11 @@
-package com.example.safetynetalert.core.infrastructure.users.models;
+package com.example.safetynetalert.core.presentation.io.input;
 
-import com.example.safetynetalert.core.domain.persons.aggregate.PersonAggregate;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @NoArgsConstructor
-public class PersonModel {
-
+public class CreatePersonResource {
     @Getter
     @Setter
     private String firstName;
@@ -35,9 +33,4 @@ public class PersonModel {
     @Getter
     @Setter
     private String email;
-
-    public PersonAggregate.Id getId() {
-        return new PersonAggregate.Id(firstName, lastName);
-    }
-
 }

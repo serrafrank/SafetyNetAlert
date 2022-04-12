@@ -1,8 +1,6 @@
 package com.example.safetynetalert.core.infrastructure.users.models;
 
-import com.example.safetynetalert.core.domain.persons.aggregate.Id;
-import com.example.safetynetalert.core.domain.persons.aggregate.MedicalRecord;
-import com.example.safetynetalert.core.domain.persons.aggregate.Medication;
+import com.example.safetynetalert.core.domain.persons.aggregate.PersonAggregate;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,8 +28,8 @@ public class MedicalRecordModel {
     @Getter
     private LocalDate birthdate;
 
-    public Id getId() {
-        return new Id(firstName, lastName);
+    public PersonAggregate.Id getId() {
+        return new PersonAggregate.Id(firstName, lastName);
     }
 
     public Integer getAge() {
@@ -54,7 +52,7 @@ public class MedicalRecordModel {
                 .collect(Collectors.toList()));
     }
 
-    public List<Medication> getMedications() {
+    public List<PersonAggregate.Medication> getMedications() {
         return medications.stream()
                 .map(MedicationModel::toMedication)
                 .collect(
@@ -66,7 +64,27 @@ public class MedicalRecordModel {
         this.allergies.addAll(allergies);
     }
 
-    public MedicalRecord toMedicalRecord() {
-        return new MedicalRecord(getMedications(), getAllergies());
+    public PersonAggregate.Medication.MedicalRecord toMedicalRecord() {
+        return new PersonAggregate.Medication.MedicalRecord(getMedications(), getAllergies());
+    }
+
+    @NoArgsConstructor
+    public static class MedicationModel {
+
+        @Getter
+        private String drug;
+
+        @Getter
+        private String dose;
+
+        public MedicationModel(String medication) {
+            var meds = medication.split(":");
+            this.drug = meds[0];
+            this.dose = meds[1];
+        }
+
+        public PersonAggregate.Medication toMedication() {
+            return new PersonAggregate.Medication(drug, dose);
+        }
     }
 }

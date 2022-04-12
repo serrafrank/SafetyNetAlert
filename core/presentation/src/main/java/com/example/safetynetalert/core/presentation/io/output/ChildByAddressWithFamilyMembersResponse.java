@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @NoArgsConstructor
-public final class ChildByAddressWithFamilyMembersResourse {
+public final class ChildByAddressWithFamilyMembersResponse {
 
     @Getter
     private String firstName;
@@ -22,7 +22,7 @@ public final class ChildByAddressWithFamilyMembersResourse {
     @Getter
     private Set<FamilyMember> familyMembers;
 
-    public ChildByAddressWithFamilyMembersResourse(ChildByAddressWithFamilyMembersValueObject c) {
+    public ChildByAddressWithFamilyMembersResponse(ChildByAddressWithFamilyMembersValueObject c) {
         this.firstName = c.firstName();
         this.lastName = c.lastName();
         this.age = c.age();
