@@ -1,10 +1,11 @@
 package com.example.safetynetalert.core.presentation.io.output;
 
 import com.example.safetynetalert.core.domain.persons.query.PersonWithMedicalRecordsValueObject;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor
 public class PersonWithMedicalRecordsResource {
@@ -31,20 +32,40 @@ public class PersonWithMedicalRecordsResource {
     @NoArgsConstructor
     public static class MedicalRecordResource {
 
-        @Getter
-        private List<String> medications;
+        private List<MedicationResource> medications;
 
         @Getter
         private List<String> allergies;
 
         public MedicalRecordResource(PersonWithMedicalRecordsValueObject.MedicalRecordValueObject medicalRecord) {
             this.medications = medicalRecord
-                .medications()
-                .stream()
-                .map(Record::toString)
-                .collect(Collectors.toList());
+                    .medications()
+                    .stream()
+                    .map(MedicationResource::new)
+                    .collect(Collectors.toList());
             this.allergies = medicalRecord.allergies();
         }
 
+        public List<String> getMedications() {
+            return medications
+                    .stream().map(MedicationResource::toString)
+                    .collect(Collectors.toList());
+        }
+    }
+
+    @NoArgsConstructor
+    public static class MedicationResource {
+        private String drug;
+        private String dose;
+
+        public MedicationResource(PersonWithMedicalRecordsValueObject.MedicationValueObject medication) {
+            this.drug = medication.drug();
+            this.dose = medication.dose();
+        }
+
+        @Override
+        public String toString() {
+            return drug + ":" + dose;
+        }
     }
 }

@@ -2,27 +2,20 @@ package com.example.safetynetalert.core.infrastructure.users.dao;
 
 import com.example.safetynetalert.core.domain.persons.aggregate.Id;
 import com.example.safetynetalert.core.domain.persons.aggregate.PersonAggregate;
-import com.example.safetynetalert.core.domain.persons.query.ChildByAddressWithFamilyMembersValueObject;
-import com.example.safetynetalert.core.domain.persons.query.PersonByFirestationValueObject;
-import com.example.safetynetalert.core.domain.persons.query.PersonByFirstnameAndLastnameValueObject;
-import com.example.safetynetalert.core.domain.persons.query.PersonProjectionRepository;
-import com.example.safetynetalert.core.domain.persons.query.PersonWithMedicalRecordsValueObject;
+import com.example.safetynetalert.core.domain.persons.query.*;
 import com.example.safetynetalert.core.infrastructure.users.models.FirestationModel;
 import com.example.safetynetalert.core.infrastructure.users.models.MedicalRecordModel;
 import com.example.safetynetalert.core.infrastructure.users.models.PersonModel;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 @Repository
 public class PersonProjectionRepositoryJson
-    implements PersonProjectionRepository {
+        implements PersonProjectionRepository {
 
     private final DataStorage dataStorage;
 
@@ -33,30 +26,30 @@ public class PersonProjectionRepositoryJson
 
     @Override
     public Optional<PersonByFirstnameAndLastnameValueObject> getPersonByFirstnameAndLastname(
-        String firstname,
-        String lastname) {
+            String firstname,
+            String lastname) {
 
         var id = new Id(firstname,
-            lastname);
+                lastname);
 
         return getPersonAggregateById(id)
-            .map(PersonByFirstnameAndLastnameValueObject::new);
+                .map(PersonByFirstnameAndLastnameValueObject::new);
     }
 
     @Override
     public Set<PersonByFirestationValueObject> getPersonByFirestation(Integer stationNumber) {
         var addresses = this.dataStorage.getFirestationsByStationNumber(stationNumber)
-            .map(FirestationModel::getAddress)
-            .toList();
+                                        .map(FirestationModel::getAddress)
+                                        .toList();
 
         return getPersonAggregates().filter(p -> addresses.contains(p.address()))
-            .map(PersonByFirestationValueObject::new)
-            .collect(Collectors.toSet());
+                                    .map(PersonByFirestationValueObject::new)
+                                    .collect(Collectors.toSet());
     }
 
     @Override
     public Set<ChildByAddressWithFamilyMembersValueObject> getChildernByAddressWithFamilyMembers(
-        String address) {
+            String address) {
 
         var persons = getPersonAggregateByAddress(address).collect(Collectors.toSet());
 
@@ -66,40 +59,40 @@ public class PersonProjectionRepositoryJson
 
         var children = persons.stream().filter(PersonAggregate::isMinor);
         return children.map(c -> {
-            var family = persons.stream()
-                .filter(p -> !p.id().equals(c.id()))
-                .collect(Collectors.toSet());
-            return new ChildByAddressWithFamilyMembersValueObject(c, family);
-        })
-            .collect(Collectors.toSet());
+                           var family = persons.stream()
+                                               .filter(p -> !p.id().equals(c.id()))
+                                               .collect(Collectors.toSet());
+                           return new ChildByAddressWithFamilyMembersValueObject(c, family);
+                       })
+                       .collect(Collectors.toSet());
     }
 
     @Override
     public Set<String> getPersonPhoneNumbersByFirestationNumber(Integer stationNumber) {
         var address = dataStorage.getFirestationsByStationNumber(stationNumber)
-            .map(FirestationModel::getAddress)
-            .collect(Collectors.toSet());
+                                 .map(FirestationModel::getAddress)
+                                 .collect(Collectors.toSet());
 
         Set<String> phoneNumers = new HashSet<>();
         address.forEach(a -> phoneNumers.addAll(dataStorage.getPersonsByAddress(a)
-            .map(PersonModel::getPhone)
-            .collect(
-                Collectors.toSet())));
+                                                           .map(PersonModel::getPhone)
+                                                           .collect(
+                                                                   Collectors.toSet())));
 
         return phoneNumers;
     }
 
     @Override
     public Set<PersonWithMedicalRecordsValueObject> getPersonsWithMedicalRecordByFirestationNumbersQuery(
-        Set<Integer> stations) {
+            Set<Integer> stations) {
 
         var addresses = dataStorage.getFirestationsByStationNumbers(stations)
-            .map(FirestationModel::getAddress)
-            .collect(Collectors.toSet());
+                                   .map(FirestationModel::getAddress)
+                                   .collect(Collectors.toSet());
 
         return getPersonAggregateByAddresses(addresses)
-            .map(PersonWithMedicalRecordsValueObject::new)
-            .collect(Collectors.toSet());
+                .map(PersonWithMedicalRecordsValueObject::new)
+                .collect(Collectors.toSet());
     }
 
     private Optional<PersonAggregate> getPersonAggregateById(Id id) {
@@ -108,7 +101,7 @@ public class PersonProjectionRepositoryJson
 
         if (medicalRecord.isPresent() && person.isPresent()) {
             return Optional.of(createPersonAggregate(person.get(),
-                medicalRecord.get()));
+                    medicalRecord.get()));
         }
 
         return Optional.empty();
@@ -124,10 +117,10 @@ public class PersonProjectionRepositoryJson
         List<PersonAggregate> personAggregateList = new ArrayList<>();
 
         this.dataStorage
-            .getPersonsByAddresses(address)
-            .forEach(p -> this.dataStorage.getMedicalRecordById(p.getId())
-                .map(m -> createPersonAggregate(p, m))
-                .ifPresent(personAggregateList::add));
+                .getPersonsByAddresses(address)
+                .forEach(p -> this.dataStorage.getMedicalRecordById(p.getId())
+                                              .map(m -> createPersonAggregate(p, m))
+                                              .ifPresent(personAggregateList::add));
 
         return personAggregateList.stream();
     }
@@ -136,25 +129,26 @@ public class PersonProjectionRepositoryJson
         List<PersonAggregate> personAggregateList = new ArrayList<>();
 
         this.dataStorage.getPersons().forEach(p -> this.dataStorage.getMedicalRecordById(p.getId())
-            .map(m -> createPersonAggregate(p, m))
-            .ifPresent(
-                personAggregateList::add));
+                                                                   .map(m -> createPersonAggregate(p, m))
+                                                                   .ifPresent(
+                                                                           personAggregateList::add));
 
         return personAggregateList.stream();
     }
 
-    private PersonAggregate createPersonAggregate(PersonModel p,
-                                                  MedicalRecordModel m) {
+    private PersonAggregate createPersonAggregate(
+            PersonModel p,
+            MedicalRecordModel m) {
 
         return new PersonAggregate(p.getFirstName(),
-            p.getLastName(),
-            p.getAddress(),
-            p.getCity(),
-            p.getZip(),
-            p.getPhone(),
-            p.getEmail(),
-            m.getBirthdate(),
-            m.toMedicalRecord()
+                p.getLastName(),
+                p.getAddress(),
+                p.getCity(),
+                p.getZip(),
+                p.getPhone(),
+                p.getEmail(),
+                m.getBirthdate(),
+                m.toMedicalRecord()
         );
     }
 }

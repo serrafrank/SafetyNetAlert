@@ -1,5 +1,9 @@
 package com.example.safetynetalert.core.domain.persons.aggregate;
 
+import com.example.safetynetalert.commons.pretty_validator.PrettyValidation;
+import com.example.safetynetalert.core.domain.exceptions.BlankArgumentException;
+import org.apache.commons.lang3.StringUtils;
+
 import java.time.LocalDate;
 import java.time.Period;
 
@@ -13,6 +17,11 @@ public record PersonAggregate(
     String email,
     LocalDate birthdate,
     MedicalRecord medicalRecord) {
+
+    public PersonAggregate {
+        PrettyValidation.test(firstName).isNot(StringUtils::isBlank).orThrow(BlankArgumentException::new);
+        PrettyValidation.test(lastName).isNot(StringUtils::isBlank).orThrow(BlankArgumentException::new);
+    }
 
     public Id id() {
         return new Id(firstName, lastName);

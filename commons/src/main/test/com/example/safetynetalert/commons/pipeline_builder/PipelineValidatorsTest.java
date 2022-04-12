@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.example.safetynetalert.commons.exceptions.ValidatorException;
-import com.example.safetynetalert.commons.pipeline_builder.validators.GenericValidation;
+import com.example.safetynetalert.commons.pretty_validator.PrettyValidation;
 import com.example.safetynetalert.commons.pipeline_builder.validators.PipelineValidatorUtil;
 import com.example.safetynetalert.commons.pipeline_builder.validators.ValidationFailedException;
 import java.io.Serializable;
@@ -28,8 +28,8 @@ class PipelineValidatorsTest {
 
         // when
         pipeline.submit(new PingRequest("hi"))
-            .validate(requestHandlers -> GenericValidation.from(requestHandlers)
-                .expected(PipelineValidatorUtil.onlyOne())
+            .validate(requestHandlers -> PrettyValidation.test(requestHandlers)
+                .is(PipelineValidatorUtil.onlyOne())
                 .isValid()).dispatch();
 
         // then:
@@ -71,8 +71,8 @@ class PipelineValidatorsTest {
 
         Executable executable = () -> requestPipeline
             .submit(pingRequest)
-            .validate(h -> GenericValidation.from(h)
-                .expected(PipelineValidatorUtil.notEmpty())
+            .validate(h -> PrettyValidation.test(h)
+                .is(PipelineValidatorUtil.notEmpty())
                 .orThrow(ValidatorException::new))
             .dispatch();
 
@@ -94,8 +94,8 @@ class PipelineValidatorsTest {
 
         Executable executable = () -> pipeline
             .submit(pingRequest)
-            .validate(requestHandlers -> GenericValidation.from(requestHandlers)
-                .expected(PipelineValidatorUtil.onlyOne())
+            .validate(requestHandlers -> PrettyValidation.test(requestHandlers)
+                .is(PipelineValidatorUtil.onlyOne())
                 .orThrow(ValidatorException::new))
             .dispatch();
         // when
@@ -116,8 +116,8 @@ class PipelineValidatorsTest {
 
         Executable executable = () -> pipeline
             .submit(pingRequest)
-            .validate(requestHandlers -> GenericValidation.from(requestHandlers)
-                .expected(PipelineValidatorUtil.onlyOne())
+            .validate(requestHandlers -> PrettyValidation.test(requestHandlers)
+                .is(PipelineValidatorUtil.onlyOne())
                 .isValid())
             .dispatch();
 
