@@ -1,18 +1,19 @@
 package com.example.safetynetalert.commons.pipeline_builder;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import com.example.safetynetalert.commons.exceptions.ValidatorException;
-import com.example.safetynetalert.commons.pretty_validator.PrettyValidation;
 import com.example.safetynetalert.commons.pipeline_builder.validators.PipelineValidatorUtil;
 import com.example.safetynetalert.commons.pipeline_builder.validators.ValidationFailedException;
+import com.example.safetynetalert.commons.pretty_validator.PrettyValidation;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.stream.Stream;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class PipelineValidatorsTest {
 
@@ -20,21 +21,21 @@ class PipelineValidatorsTest {
     void supportsAbstractRequestHandlers() {
         // given
         HandlerThatExtendsAbstractClass handlerThatExtendsAbstractClass =
-            new HandlerThatExtendsAbstractClass();
+                new HandlerThatExtendsAbstractClass();
 
         // and
         Pipeline pipeline = new PipelineBuilder()
-            .handlers(() -> Stream.of(handlerThatExtendsAbstractClass));
+                .handlers(() -> Stream.of(handlerThatExtendsAbstractClass));
 
         // when
         pipeline.submit(new PingRequest("hi"))
-            .validate(requestHandlers -> PrettyValidation.test(requestHandlers)
-                .is(PipelineValidatorUtil.onlyOne())
-                .isValid()).dispatch();
+                .validate(requestHandlers -> PrettyValidation.test(requestHandlers)
+                        .is(PipelineValidatorUtil.onlyOne())
+                        .isValid()).dispatch();
 
         // then:
         assertThat(handlerThatExtendsAbstractClass.receivedPingRequests)
-            .containsOnly(new PingRequest("hi"));
+                .containsOnly(new PingRequest("hi"));
     }
 
     @Test
@@ -45,8 +46,8 @@ class PipelineValidatorsTest {
 
         // and
         Pipeline pipeline = new PipelineBuilder()
-            .handlers(() -> Stream.of(hiHandler,
-                pingSaverHandler));
+                .handlers(() -> Stream.of(hiHandler,
+                        pingSaverHandler));
 
         // when
         pipeline.submit(new PingRequest("hi")).dispatch();
@@ -56,11 +57,11 @@ class PipelineValidatorsTest {
 
         // then
         assertThat(hiHandler.receivedPingRequests)
-            .containsOnly(new PingRequest("hi"));
+                .containsOnly(new PingRequest("hi"));
 
         // and
         assertThat(pingSaverHandler.receivedPingRequests)
-            .containsOnly(new PingRequest("bye"));
+                .containsOnly(new PingRequest("bye"));
     }
 
     @Test
@@ -70,18 +71,18 @@ class PipelineValidatorsTest {
         PingRequest pingRequest = new PingRequest();
 
         Executable executable = () -> requestPipeline
-            .submit(pingRequest)
-            .validate(h -> PrettyValidation.test(h)
-                .is(PipelineValidatorUtil.notEmpty())
-                .orThrow(ValidatorException::new))
-            .dispatch();
+                .submit(pingRequest)
+                .validate(h -> PrettyValidation.test(h)
+                        .is(PipelineValidatorUtil.notEmpty())
+                        .orThrow(ValidatorException::new))
+                .dispatch();
 
         // when
         Throwable e = assertThrows(ValidatorException.class, executable);
 
         // then
         assertThat(e)
-            .hasMessage("Validator exception");
+                .hasMessage("Validator exception");
     }
 
     @Test
@@ -89,21 +90,21 @@ class PipelineValidatorsTest {
         // given
         PingRequest pingRequest = new PingRequest();
         Pipeline pipeline = new PipelineBuilder()
-            .handlers(() -> Stream.of(new Pong1Handler(),
-                new Pong2Handler()));
+                .handlers(() -> Stream.of(new Pong1Handler(),
+                        new Pong2Handler()));
 
         Executable executable = () -> pipeline
-            .submit(pingRequest)
-            .validate(requestHandlers -> PrettyValidation.test(requestHandlers)
-                .is(PipelineValidatorUtil.onlyOne())
-                .orThrow(ValidatorException::new))
-            .dispatch();
+                .submit(pingRequest)
+                .validate(requestHandlers -> PrettyValidation.test(requestHandlers)
+                        .is(PipelineValidatorUtil.onlyOne())
+                        .orThrow(ValidatorException::new))
+                .dispatch();
         // when
         Throwable e = assertThrows(ValidatorException.class, executable);
 
         // then
         assertThat(e)
-            .hasMessage("Validator exception");
+                .hasMessage("Validator exception");
     }
 
     @Test
@@ -111,26 +112,26 @@ class PipelineValidatorsTest {
         // given
         PingRequest pingRequest = new PingRequest();
         Pipeline pipeline = new PipelineBuilder()
-            .handlers(() -> Stream.of(new Pong1Handler(),
-                new Pong2Handler()));
+                .handlers(() -> Stream.of(new Pong1Handler(),
+                        new Pong2Handler()));
 
         Executable executable = () -> pipeline
-            .submit(pingRequest)
-            .validate(requestHandlers -> PrettyValidation.test(requestHandlers)
-                .is(PipelineValidatorUtil.onlyOne())
-                .isValid())
-            .dispatch();
+                .submit(pingRequest)
+                .validate(requestHandlers -> PrettyValidation.test(requestHandlers)
+                        .is(PipelineValidatorUtil.onlyOne())
+                        .isValid())
+                .dispatch();
 
         // when
         Throwable e = assertThrows(ValidationFailedException.class, executable);
 
         // then
         assertThat(e)
-            .hasMessage("The pipeline validator failed");
+                .hasMessage("The pipeline validator failed");
     }
 
     private record PingRequest(String message)
-        implements Serializable {
+            implements Serializable {
 
         PingRequest() {
             this("Ping");
@@ -138,7 +139,7 @@ class PipelineValidatorsTest {
     }
 
     private static class PingSaverHandler
-        implements PipelineHandler<PingRequest, String> {
+            implements PipelineHandler<PingRequest, String> {
 
         private final Collection<PingRequest> receivedPingRequests = new ArrayList<>();
 
@@ -155,7 +156,7 @@ class PipelineValidatorsTest {
     }
 
     private static class HiHandler
-        implements PipelineHandler<PingRequest, String> {
+            implements PipelineHandler<PingRequest, String> {
 
         private final Collection<PingRequest> receivedPingRequests = new ArrayList<>();
 
@@ -172,7 +173,7 @@ class PipelineValidatorsTest {
     }
 
     private static class Pong1Handler
-        implements PipelineHandler<PingRequest, String> {
+            implements PipelineHandler<PingRequest, String> {
 
         @Override
         public String handleRequest(PingRequest request) {
@@ -181,7 +182,7 @@ class PipelineValidatorsTest {
     }
 
     private static class Pong2Handler
-        implements PipelineHandler<PingRequest, String> {
+            implements PipelineHandler<PingRequest, String> {
 
         @Override
         public String handleRequest(PingRequest request) {
@@ -190,12 +191,12 @@ class PipelineValidatorsTest {
     }
 
     private abstract static class AbstractHandler<C, R>
-        implements PipelineHandler<C, R> {
+            implements PipelineHandler<C, R> {
 
     }
 
     private static class HandlerThatExtendsAbstractClass
-        extends AbstractHandler<PingRequest, String> {
+            extends AbstractHandler<PingRequest, String> {
 
         private final Collection<PingRequest> receivedPingRequests = new ArrayList<>();
 

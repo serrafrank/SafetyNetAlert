@@ -12,9 +12,4 @@ public record Medication(
         PrettyValidation.test(drug).isNot(StringUtils::isBlank).orThrow(BlankArgumentException::new);
         PrettyValidation.test(dose).isNot(StringUtils::isBlank).orThrow(BlankArgumentException::new);
     }
-
-    @Override
-    public String toString() {
-        return drug + ":" + dose;
-    }
 }

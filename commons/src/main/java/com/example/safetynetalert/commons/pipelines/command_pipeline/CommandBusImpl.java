@@ -3,15 +3,15 @@ package com.example.safetynetalert.commons.pipelines.command_pipeline;
 import com.example.safetynetalert.commons.pipeline_builder.Pipeline;
 import com.example.safetynetalert.commons.pipeline_builder.PipelineBuilder;
 import com.example.safetynetalert.commons.pipeline_builder.PipelineSupplier.Supply;
-import com.example.safetynetalert.commons.pretty_validator.PrettyValidation;
 import com.example.safetynetalert.commons.pipeline_builder.validators.PipelineValidatorUtil;
 import com.example.safetynetalert.commons.pipelines.command_pipeline.exceptions.CommandHandlerNotFoundException;
 import com.example.safetynetalert.commons.pipelines.command_pipeline.exceptions.CommandHasMultipleHandlersException;
 import com.example.safetynetalert.commons.pipelines.event_pipeline.Event;
 import com.example.safetynetalert.commons.pipelines.event_pipeline.EventBus;
+import com.example.safetynetalert.commons.pretty_validator.PrettyValidation;
 
 public class CommandBusImpl
-    implements CommandBus {
+        implements CommandBus {
 
     private final Pipeline genericPipeline = new PipelineBuilder();
     private EventBus eventBus;
@@ -36,24 +36,24 @@ public class CommandBusImpl
 
     @Override
     public <TCommand extends Command, TReturn> TReturn dispatch(
-        TCommand command) {
+            TCommand command) {
         var dispatcher = this.genericPipeline.submit(command)
-            .validate(handlers -> PrettyValidation.test(
-                handlers)
-                .is(PipelineValidatorUtil.notEmpty())
-                .orThrow(() -> new CommandHandlerNotFoundException(
-                    command)))
-            .validate(handlers -> PrettyValidation.test(
-                handlers)
-                .is(PipelineValidatorUtil.onlyOne())
-                .orThrow(() -> new CommandHasMultipleHandlersException(
-                    command,
-                    handlers)));
+                .validate(handlers -> PrettyValidation.test(
+                                handlers)
+                        .is(PipelineValidatorUtil.notEmpty())
+                        .orThrow(() -> new CommandHandlerNotFoundException(
+                                command)))
+                .validate(handlers -> PrettyValidation.test(
+                                handlers)
+                        .is(PipelineValidatorUtil.onlyOne())
+                        .orThrow(() -> new CommandHasMultipleHandlersException(
+                                command,
+                                handlers)));
 
         if (eventBus != null) {
             var handler = (CommandHandler) dispatcher.handler();
             handler.events()
-                .forEach(event -> eventBus.dispatch((Event) event));
+                    .forEach(event -> eventBus.dispatch((Event) event));
         }
 
         return dispatcher.first();

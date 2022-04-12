@@ -6,15 +6,15 @@ import java.util.Set;
 public interface PersonProjectionRepository {
 
     Optional<PersonByFirstnameAndLastnameValueObject> getPersonByFirstnameAndLastname(
-        String firstname,
-        String lastname);
+            String firstname,
+            String lastname);
 
-    Set<PersonByFirestationValueObject> getPersonByFirestation(Integer stationNumber);
+    Set<PersonByFireStationValueObject> getPersonByFireStation(Integer stationNumber);
 
     Set<ChildByAddressWithFamilyMembersValueObject> getChildernByAddressWithFamilyMembers(String address);
 
-    Set<String> getPersonPhoneNumbersByFirestationNumber(Integer stationNumber);
+    Set<String> getPersonPhoneNumbersByFireStationNumber(Integer stationNumber);
 
-    Set<PersonWithMedicalRecordsValueObject> getPersonsWithMedicalRecordByFirestationNumbersQuery(
-        Set<Integer> stations);
+    Set<PersonWithMedicalRecordsValueObject> getPersonsWithMedicalRecordByFireStationNumbersQuery(
+            Set<Integer> stations);
 }

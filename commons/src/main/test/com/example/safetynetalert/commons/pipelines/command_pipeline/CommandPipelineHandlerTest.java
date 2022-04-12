@@ -1,18 +1,19 @@
 package com.example.safetynetalert.commons.pipelines.command_pipeline;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
-import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class CommandPipelineHandlerTest {
 
     @Test
     void resolvesHandlersWithAGenericRequestType() {
         CommandBus commandBus = new CommandBusImpl()
-            .handlers(() -> Stream.of(new CommandPipelineTypeHandler<>()));
+                .handlers(() -> Stream.of(new CommandPipelineTypeHandler<>()));
         var request = new FooRequest<>(new BarRequest());
 
         String result = commandBus.dispatch(request);
@@ -26,9 +27,9 @@ class CommandPipelineHandlerTest {
         var notAPingHandler = new NotAPingHandler();
 
         CommandBus commandBus = new CommandBusImpl()
-            .handlers(() -> Stream.of(
-                pingHandler,
-                notAPingHandler));
+                .handlers(() -> Stream.of(
+                        pingHandler,
+                        notAPingHandler));
 
         // and
         var ping = new PingRequest();
@@ -42,23 +43,23 @@ class CommandPipelineHandlerTest {
 
         // then
         assertThat(pingHandler.handled).containsOnly(
-            ping.getClass().getSimpleName(),
-            smartPing.getClass().getSimpleName());
+                ping.getClass().getSimpleName(),
+                smartPing.getClass().getSimpleName());
         assertThat(notAPingHandler.handled).containsOnly(notAPing.getClass().getSimpleName());
     }
 
     private record BarRequest()
-        implements Command {
+            implements Command {
 
     }
 
     private record FooRequest<C>(C request)
-        implements Command {
+            implements Command {
 
     }
 
     private static class CommandPipelineTypeHandler<C>
-        extends AbstractCommandHandler<FooRequest<C>, String> {
+            extends AbstractCommandHandler<FooRequest<C>, String> {
 
         @Override
         public String handler(FooRequest<C> request) {
@@ -67,12 +68,12 @@ class CommandPipelineHandlerTest {
     }
 
     private static class PingRequest
-        implements Command {
+            implements Command {
 
     }
 
     private static class PingHandler
-        extends AbstractCommandHandler<PingRequest, List<String>> {
+            extends AbstractCommandHandler<PingRequest, List<String>> {
 
         private final List<String> handled = new ArrayList<>();
 
@@ -84,17 +85,17 @@ class CommandPipelineHandlerTest {
     }
 
     private static class SmartPingRequest
-        extends PingRequest {
+            extends PingRequest {
 
     }
 
     private static class NotAPing
-        implements Command {
+            implements Command {
 
     }
 
     private static class NotAPingHandler
-        extends AbstractCommandHandler<NotAPing, List<String>> {
+            extends AbstractCommandHandler<NotAPing, List<String>> {
 
         private final List<String> handled = new ArrayList<>();
 

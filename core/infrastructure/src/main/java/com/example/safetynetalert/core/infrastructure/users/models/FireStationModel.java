@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @NoArgsConstructor
-public class FirestationModel {
+public class FireStationModel {
 
     @Getter
     @Setter
@@ -15,7 +15,7 @@ public class FirestationModel {
     @Setter
     private String address;
 
-    public FirestationModel(Integer station, String address) {
+    public FireStationModel(Integer station, String address) {
         this.station = station;
         this.address = address;
     }

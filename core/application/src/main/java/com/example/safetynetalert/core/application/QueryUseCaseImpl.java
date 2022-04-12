@@ -1,23 +1,16 @@
 package com.example.safetynetalert.core.application;
 
 import com.example.safetynetalert.commons.pipelines.query_pipeline.QueryBus;
-import com.example.safetynetalert.core.domain.persons.query.ChildByAddressWithFamilyMembersValueObject;
-import com.example.safetynetalert.core.domain.persons.query.GetChildrenByAddressWithFamilyMembersQuery;
-import com.example.safetynetalert.core.domain.persons.query.GetPersonByFirestationQuery;
-import com.example.safetynetalert.core.domain.persons.query.GetPersonByFirstnameAndLastnameQuery;
-import com.example.safetynetalert.core.domain.persons.query.GetPersonPhoneNumbersByFirestationNumberQuery;
-import com.example.safetynetalert.core.domain.persons.query.GetPersonsWithMedicalRecordByFirestationNumbersQuery;
-import com.example.safetynetalert.core.domain.persons.query.PersonByFirestationValueObject;
-import com.example.safetynetalert.core.domain.persons.query.PersonByFirstnameAndLastnameValueObject;
-import com.example.safetynetalert.core.domain.persons.query.PersonWithMedicalRecordsValueObject;
-import java.util.Optional;
-import java.util.Set;
+import com.example.safetynetalert.core.domain.persons.query.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+import java.util.Set;
+
 @Service
 public class QueryUseCaseImpl
-    implements QueryUseCase {
+        implements QueryUseCase {
 
     private final QueryBus queryBus;
 
@@ -28,32 +21,32 @@ public class QueryUseCaseImpl
 
     @Override
     public Optional<PersonByFirstnameAndLastnameValueObject> getPersonByFirstnameAndLastname(
-        String firstname,
-        String lastname) {
+            String firstname,
+            String lastname) {
         return queryBus.dispatch(new GetPersonByFirstnameAndLastnameQuery(
-            firstname,
-            lastname));
+                firstname,
+                lastname));
     }
 
     @Override
-    public Set<PersonByFirestationValueObject> getPersonsByFirestation(Integer station) {
-        return queryBus.dispatch(new GetPersonByFirestationQuery(station));
+    public Set<PersonByFireStationValueObject> getPersonsByFireStation(Integer station) {
+        return queryBus.dispatch(new GetPersonByFireStationQuery(station));
     }
 
     @Override
     public Set<ChildByAddressWithFamilyMembersValueObject> getChildrenByAddressWithFamilyMembers(
-        String address) {
+            String address) {
         return queryBus.dispatch(new GetChildrenByAddressWithFamilyMembersQuery(address));
     }
 
     @Override
-    public Set<String> getPersonPhoneNumbersByFirestationNumber(Integer station) {
-        return queryBus.dispatch(new GetPersonPhoneNumbersByFirestationNumberQuery(station));
+    public Set<String> getPersonPhoneNumbersByFireStationNumber(Integer station) {
+        return queryBus.dispatch(new GetPersonPhoneNumbersByFireStationNumberQuery(station));
     }
 
     @Override
-    public Set<PersonWithMedicalRecordsValueObject> getPersonWithMedicalRecordsByFirestationNumber(
-        Set<Integer> stations) {
-        return queryBus.dispatch(new GetPersonsWithMedicalRecordByFirestationNumbersQuery(stations));
+    public Set<PersonWithMedicalRecordsValueObject> getPersonWithMedicalRecordsByFireStationNumber(
+            Set<Integer> stations) {
+        return queryBus.dispatch(new GetPersonsWithMedicalRecordByFireStationNumbersQuery(stations));
     }
 }

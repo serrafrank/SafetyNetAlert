@@ -10,6 +10,7 @@ public class PipelineValidatorUtil {
 
     private PipelineValidatorUtil() {
     }
+
     public static <TObject> Predicate<List<TObject>> notEmpty() {
         return s -> Objects.nonNull(s) && ObjectUtils.isNotEmpty(s);
     }
@@ -19,6 +20,6 @@ public class PipelineValidatorUtil {
     }
 
     public static <TObject> Predicate<List<TObject>> greaterThanOne() {
-        return s -> Objects.nonNull(s) && ObjectUtils.isNotEmpty(s) &&  s.size() > 1;
+        return s -> Objects.nonNull(s) && ObjectUtils.isNotEmpty(s) && s.size() > 1;
     }
 }

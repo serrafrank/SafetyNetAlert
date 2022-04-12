@@ -4,24 +4,28 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.context.request.WebRequest;
 
 import java.time.ZonedDateTime;
 
 public class HttpErrorMessage {
     private final ZonedDateTime date;
     private final HttpStatus status;
-    private final String message;
-    private final String description;
+    private final Exception exception;
+    private final WebRequest request;
 
-    public HttpErrorMessage(HttpStatus status, String message, String description) {
+    public HttpErrorMessage(
+            HttpStatus status,
+            Exception exception,
+            WebRequest request) {
         this.date = ZonedDateTime.now();
         this.status = status;
-        this.message = message;
-        this.description = description;
+        this.exception = exception;
+        this.request = request;
     }
 
     @JsonFormat(shape = JsonFormat.Shape.STRING,
-                pattern = "MM/dd/yyyy - HH:mm:ss Z")
+            pattern = "MM/dd/yyyy - HH:mm:ss Z")
     public ZonedDateTime getDate() {
         return date;
     }
@@ -38,12 +42,12 @@ public class HttpErrorMessage {
 
     @JsonGetter
     public String getMessage() {
-        return message;
+        return exception.getMessage();
     }
 
     @JsonGetter
     public String getDescription() {
-        return description;
+        return request.getDescription(false);
     }
 
     public ResponseEntity<HttpErrorMessage> toResponseEntity() {

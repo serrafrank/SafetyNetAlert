@@ -5,7 +5,7 @@ import com.example.safetynetalert.commons.pretty_validator.PrettyValidation;
 import com.example.safetynetalert.core.domain.exceptions.BlankArgumentException;
 
 public record GetChildrenByAddressWithFamilyMembersQuery(String address)
-    implements Query {
+        implements Query {
     public GetChildrenByAddressWithFamilyMembersQuery {
         PrettyValidation.test(address)
                 .isNot(String::isBlank)

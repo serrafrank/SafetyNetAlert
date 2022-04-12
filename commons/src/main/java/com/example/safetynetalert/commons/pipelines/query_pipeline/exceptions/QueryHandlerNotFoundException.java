@@ -3,12 +3,12 @@ package com.example.safetynetalert.commons.pipelines.query_pipeline.exceptions;
 import com.example.safetynetalert.commons.pipelines.query_pipeline.Query;
 
 public class QueryHandlerNotFoundException
-    extends RuntimeException {
+        extends RuntimeException {
 
     private final String queryClass;
 
     public <TQuery extends Query> QueryHandlerNotFoundException(
-        TQuery query) {
+            TQuery query) {
         this.queryClass = query.getClass().getSimpleName();
     }
 

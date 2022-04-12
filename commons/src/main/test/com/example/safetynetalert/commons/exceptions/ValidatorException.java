@@ -1,7 +1,7 @@
 package com.example.safetynetalert.commons.exceptions;
 
 public class ValidatorException
-    extends RuntimeException {
+        extends RuntimeException {
 
     public ValidatorException() {
         super("Validator exception");

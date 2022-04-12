@@ -1,31 +1,32 @@
 package com.example.safetynetalert.core.presentation.io.output;
 
-import com.example.safetynetalert.core.domain.persons.query.PersonByFirestationValueObject;
+import com.example.safetynetalert.core.domain.persons.query.PersonByFireStationValueObject;
+import lombok.Getter;
+
 import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
-import lombok.Getter;
 
-public class AllPersonsByFirestationNumberResource {
+public class AllPersonsByFireStationNumberResource {
 
     @Getter
-    private final Set<PersonByFirestationNumberDto> persons;
+    private final Set<PersonByFireStationNumberDto> persons;
 
     @Getter
     private final Long numberOfChildren;
 
-    public AllPersonsByFirestationNumberResource(Collection<PersonByFirestationValueObject> personsByFirestationNumber) {
-        persons = personsByFirestationNumber.stream()
-            .map(PersonByFirestationNumberDto::new)
-            .collect(
-                Collectors.toSet());
+    public AllPersonsByFireStationNumberResource(Collection<PersonByFireStationValueObject> personsByFireStationNumber) {
+        persons = personsByFireStationNumber.stream()
+                .map(PersonByFireStationNumberDto::new)
+                .collect(
+                        Collectors.toSet());
 
-        numberOfChildren = personsByFirestationNumber.stream()
-            .filter(PersonByFirestationValueObject::isMinor)
-            .count();
+        numberOfChildren = personsByFireStationNumber.stream()
+                .filter(PersonByFireStationValueObject::isMinor)
+                .count();
     }
 
-    static class PersonByFirestationNumberDto {
+    static class PersonByFireStationNumberDto {
 
         @Getter
         private final String firstName;
@@ -45,7 +46,7 @@ public class AllPersonsByFirestationNumberResource {
         @Getter
         private final String phone;
 
-        public PersonByFirestationNumberDto(PersonByFirestationValueObject person) {
+        public PersonByFireStationNumberDto(PersonByFireStationValueObject person) {
             this.firstName = person.firstName();
             this.lastName = person.lastName();
             this.address = person.address();
@@ -54,5 +55,4 @@ public class AllPersonsByFirestationNumberResource {
             this.phone = person.phone();
         }
     }
-
 }

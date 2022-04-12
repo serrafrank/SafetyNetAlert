@@ -40,9 +40,9 @@ class QueryUseCaseImplTest {
 
     @Test
     void getPersonsByFirestation() {
-        when(queryBusMock.dispatch(any(GetPersonByFirestationQuery.class))).thenReturn(Set.of());
+        when(queryBusMock.dispatch(any(GetPersonByFireStationQuery.class))).thenReturn(Set.of());
 
-        var response = queryUseCase.getPersonsByFirestation(1);
+        var response = queryUseCase.getPersonsByFireStation(1);
 
         assertThat(response).isNotNull();
         assertThat(response).isInstanceOf(Set.class);
@@ -60,9 +60,9 @@ class QueryUseCaseImplTest {
 
     @Test
     void getPersonPhoneNumbersByFirestationNumber() {
-        when(queryBusMock.dispatch(any(GetPersonPhoneNumbersByFirestationNumberQuery.class))).thenReturn(Set.of());
+        when(queryBusMock.dispatch(any(GetPersonPhoneNumbersByFireStationNumberQuery.class))).thenReturn(Set.of());
 
-        var response = queryUseCase.getPersonPhoneNumbersByFirestationNumber(1);
+        var response = queryUseCase.getPersonPhoneNumbersByFireStationNumber(1);
 
         assertThat(response).isNotNull();
         assertThat(response).isInstanceOf(Set.class);
@@ -70,9 +70,9 @@ class QueryUseCaseImplTest {
 
     @Test
     void getPersonWithMedicalRecordsByFirestationNumber() {
-        when(queryBusMock.dispatch(any(GetPersonsWithMedicalRecordByFirestationNumbersQuery.class))).thenReturn(Set.of());
+        when(queryBusMock.dispatch(any(GetPersonsWithMedicalRecordByFireStationNumbersQuery.class))).thenReturn(Set.of());
 
-        var response = queryUseCase.getPersonWithMedicalRecordsByFirestationNumber(Set.of(1));
+        var response = queryUseCase.getPersonWithMedicalRecordsByFireStationNumber(Set.of(1));
 
         assertThat(response).isNotNull();
         assertThat(response).isInstanceOf(Set.class);

@@ -3,7 +3,7 @@ package com.example.safetynetalert.core.infrastructure.users.dao;
 import com.example.safetynetalert.core.domain.persons.aggregate.Id;
 import com.example.safetynetalert.core.domain.persons.aggregate.PersonAggregate;
 import com.example.safetynetalert.core.domain.persons.query.*;
-import com.example.safetynetalert.core.infrastructure.users.models.FirestationModel;
+import com.example.safetynetalert.core.infrastructure.users.models.FireStationModel;
 import com.example.safetynetalert.core.infrastructure.users.models.MedicalRecordModel;
 import com.example.safetynetalert.core.infrastructure.users.models.PersonModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,14 +37,14 @@ public class PersonProjectionRepositoryJson
     }
 
     @Override
-    public Set<PersonByFirestationValueObject> getPersonByFirestation(Integer stationNumber) {
+    public Set<PersonByFireStationValueObject> getPersonByFireStation(Integer stationNumber) {
         var addresses = this.dataStorage.getFirestationsByStationNumber(stationNumber)
-                                        .map(FirestationModel::getAddress)
-                                        .toList();
+                .map(FireStationModel::getAddress)
+                .toList();
 
         return getPersonAggregates().filter(p -> addresses.contains(p.address()))
-                                    .map(PersonByFirestationValueObject::new)
-                                    .collect(Collectors.toSet());
+                .map(PersonByFireStationValueObject::new)
+                .collect(Collectors.toSet());
     }
 
     @Override
@@ -59,36 +59,36 @@ public class PersonProjectionRepositoryJson
 
         var children = persons.stream().filter(PersonAggregate::isMinor);
         return children.map(c -> {
-                           var family = persons.stream()
-                                               .filter(p -> !p.id().equals(c.id()))
-                                               .collect(Collectors.toSet());
-                           return new ChildByAddressWithFamilyMembersValueObject(c, family);
-                       })
-                       .collect(Collectors.toSet());
+                    var family = persons.stream()
+                            .filter(p -> !p.id().equals(c.id()))
+                            .collect(Collectors.toSet());
+                    return new ChildByAddressWithFamilyMembersValueObject(c, family);
+                })
+                .collect(Collectors.toSet());
     }
 
     @Override
-    public Set<String> getPersonPhoneNumbersByFirestationNumber(Integer stationNumber) {
+    public Set<String> getPersonPhoneNumbersByFireStationNumber(Integer stationNumber) {
         var address = dataStorage.getFirestationsByStationNumber(stationNumber)
-                                 .map(FirestationModel::getAddress)
-                                 .collect(Collectors.toSet());
+                .map(FireStationModel::getAddress)
+                .collect(Collectors.toSet());
 
-        Set<String> phoneNumers = new HashSet<>();
-        address.forEach(a -> phoneNumers.addAll(dataStorage.getPersonsByAddress(a)
-                                                           .map(PersonModel::getPhone)
-                                                           .collect(
-                                                                   Collectors.toSet())));
+        Set<String> phoneNumbers = new HashSet<>();
+        address.forEach(a -> phoneNumbers.addAll(dataStorage.getPersonsByAddress(a)
+                .map(PersonModel::getPhone)
+                .collect(
+                        Collectors.toSet())));
 
-        return phoneNumers;
+        return phoneNumbers;
     }
 
     @Override
-    public Set<PersonWithMedicalRecordsValueObject> getPersonsWithMedicalRecordByFirestationNumbersQuery(
+    public Set<PersonWithMedicalRecordsValueObject> getPersonsWithMedicalRecordByFireStationNumbersQuery(
             Set<Integer> stations) {
 
         var addresses = dataStorage.getFirestationsByStationNumbers(stations)
-                                   .map(FirestationModel::getAddress)
-                                   .collect(Collectors.toSet());
+                .map(FireStationModel::getAddress)
+                .collect(Collectors.toSet());
 
         return getPersonAggregateByAddresses(addresses)
                 .map(PersonWithMedicalRecordsValueObject::new)
@@ -119,8 +119,8 @@ public class PersonProjectionRepositoryJson
         this.dataStorage
                 .getPersonsByAddresses(address)
                 .forEach(p -> this.dataStorage.getMedicalRecordById(p.getId())
-                                              .map(m -> createPersonAggregate(p, m))
-                                              .ifPresent(personAggregateList::add));
+                        .map(m -> createPersonAggregate(p, m))
+                        .ifPresent(personAggregateList::add));
 
         return personAggregateList.stream();
     }
@@ -129,9 +129,9 @@ public class PersonProjectionRepositoryJson
         List<PersonAggregate> personAggregateList = new ArrayList<>();
 
         this.dataStorage.getPersons().forEach(p -> this.dataStorage.getMedicalRecordById(p.getId())
-                                                                   .map(m -> createPersonAggregate(p, m))
-                                                                   .ifPresent(
-                                                                           personAggregateList::add));
+                .map(m -> createPersonAggregate(p, m))
+                .ifPresent(
+                        personAggregateList::add));
 
         return personAggregateList.stream();
     }

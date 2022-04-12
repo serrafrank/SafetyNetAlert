@@ -3,6 +3,7 @@ package com.example.safetynetalert.core.domain.persons.query;
 import com.example.safetynetalert.core.domain.persons.aggregate.MedicalRecord;
 import com.example.safetynetalert.core.domain.persons.aggregate.Medication;
 import com.example.safetynetalert.core.domain.persons.aggregate.PersonAggregate;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,10 +15,10 @@ public record PersonWithMedicalRecordsValueObject(String firstName,
 
     public PersonWithMedicalRecordsValueObject(PersonAggregate m) {
         this(m.firstName(),
-            m.lastName(),
-            m.address(),
-            m.age(),
-            new MedicalRecordValueObject(m.medicalRecord()));
+                m.lastName(),
+                m.address(),
+                m.age(),
+                new MedicalRecordValueObject(m.medicalRecord()));
     }
 
     public record MedicalRecordValueObject(List<MedicationValueObject> medications,
@@ -25,17 +26,17 @@ public record PersonWithMedicalRecordsValueObject(String firstName,
 
         public MedicalRecordValueObject(MedicalRecord medicalRecord) {
             this(medicalRecord
-                    .medications()
-                    .stream()
-                    .map(MedicationValueObject::new)
-                    .collect(Collectors.toList()),
-                medicalRecord.allergies());
+                            .medications()
+                            .stream()
+                            .map(MedicationValueObject::new)
+                            .collect(Collectors.toList()),
+                    medicalRecord.allergies());
         }
     }
 
     public record MedicationValueObject(
-        String drug,
-        String dose) {
+            String drug,
+            String dose) {
 
         public MedicationValueObject(Medication medication) {
             this(medication.drug(), medication.dose());

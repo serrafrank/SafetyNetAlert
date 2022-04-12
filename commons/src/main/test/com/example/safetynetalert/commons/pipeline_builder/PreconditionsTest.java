@@ -1,9 +1,9 @@
 package com.example.safetynetalert.commons.pipeline_builder;
 
+import org.junit.jupiter.api.Test;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import org.junit.jupiter.api.Test;
 
 class PreconditionsTest {
 
@@ -11,9 +11,9 @@ class PreconditionsTest {
     void throwsIfArgumentIsNull() {
         var msg = "Parameter must not be null";
         Throwable e =
-            assertThrows(
-                IllegalArgumentException.class,
-                () -> Preconditions.isNotNull(null));
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () -> Preconditions.isNotNull(null));
 
         assertThat(e).hasMessage(msg);
     }
@@ -22,9 +22,9 @@ class PreconditionsTest {
     void throwsReturnMessageIfArgumentIsNull() {
         var msg = "Shit has happened";
         Throwable e =
-            assertThrows(
-                IllegalArgumentException.class,
-                () -> Preconditions.isNotNull(null, msg));
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () -> Preconditions.isNotNull(null, msg));
 
         assertThat(e).hasMessage(msg);
     }

@@ -3,7 +3,7 @@ package com.example.safetynetalert.core.infrastructure.users.dao;
 import com.example.safetynetalert.commons.pretty_validator.PrettyValidation;
 import com.example.safetynetalert.core.domain.persons.aggregate.Id;
 import com.example.safetynetalert.core.infrastructure.users.models.DataModel;
-import com.example.safetynetalert.core.infrastructure.users.models.FirestationModel;
+import com.example.safetynetalert.core.infrastructure.users.models.FireStationModel;
 import com.example.safetynetalert.core.infrastructure.users.models.MedicalRecordModel;
 import com.example.safetynetalert.core.infrastructure.users.models.PersonModel;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,8 +26,8 @@ public class DataStorage {
 
     public DataStorage() throws IOException {
         PrettyValidation.test(DATA_FILE)
-                        .isNotEmpty()
-                        .orThrow(() -> new IllegalArgumentException("safe-net-alert.data-file cant be null or empty"));
+                .isNotEmpty()
+                .orThrow(() -> new IllegalArgumentException("safe-net-alert.data-file cant be null or empty"));
 
         ObjectMapper objectMapper = new ObjectMapper();
         File file = new ClassPathResource(DATA_FILE).getFile();
@@ -57,26 +57,26 @@ public class DataStorage {
                 .filter(p -> addresses.contains(p.getAddress()));
     }
 
-    public Stream<FirestationModel> getFirestations() {
+    public Stream<FireStationModel> getFirestations() {
         return data
                 .getFirestations()
                 .stream();
     }
 
-    public Stream<FirestationModel> getFirestationsByStationNumber(Integer stationNumber) {
+    public Stream<FireStationModel> getFirestationsByStationNumber(Integer stationNumber) {
         return getFirestationsByStationNumbers(Set.of(stationNumber));
     }
 
-    public Stream<FirestationModel> getFirestationsByStationNumbers(Set<Integer> stationNumbers) {
+    public Stream<FireStationModel> getFirestationsByStationNumbers(Set<Integer> stationNumbers) {
         return getFirestations()
                 .filter(f -> stationNumbers.contains(f.getStation()));
     }
 
-    public Stream<FirestationModel> getFirestationsByAddress(String address) {
+    public Stream<FireStationModel> getFirestationsByAddress(String address) {
         return getFirestationsByAddresses(Set.of(address));
     }
 
-    public Stream<FirestationModel> getFirestationsByAddresses(Set<String> address) {
+    public Stream<FireStationModel> getFirestationsByAddresses(Set<String> address) {
         return getFirestations()
                 .filter(f -> address.contains(f.getAddress()));
     }

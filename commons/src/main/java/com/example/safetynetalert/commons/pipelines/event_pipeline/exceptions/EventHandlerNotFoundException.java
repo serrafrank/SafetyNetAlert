@@ -3,12 +3,12 @@ package com.example.safetynetalert.commons.pipelines.event_pipeline.exceptions;
 import com.example.safetynetalert.commons.pipelines.event_pipeline.Event;
 
 public class EventHandlerNotFoundException
-    extends RuntimeException {
+        extends RuntimeException {
 
     private final String eventClass;
 
     public <TEvent extends Event> EventHandlerNotFoundException(
-        TEvent event) {
+            TEvent event) {
         this.eventClass = event.getClass().getSimpleName();
     }
 

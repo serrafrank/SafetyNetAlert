@@ -6,13 +6,13 @@ import com.example.safetynetalert.core.domain.exceptions.NullOrEmptyArgumentExce
 
 import java.util.Set;
 
-public record GetPersonsWithMedicalRecordByFirestationNumbersQuery(Set<Integer> stations)
-    implements
-    Query {
-    public GetPersonsWithMedicalRecordByFirestationNumbersQuery {
+public record GetPersonsWithMedicalRecordByFireStationNumbersQuery(Set<Integer> stations)
+        implements
+        Query {
+    public GetPersonsWithMedicalRecordByFireStationNumbersQuery {
         PrettyValidation.test(stations)
                 .isNotNull()
-                .orThrow(() -> new NullOrEmptyArgumentException("firestationNumber"));
+                .orThrow(() -> new NullOrEmptyArgumentException("fireStationNumber"));
     }
 }
 

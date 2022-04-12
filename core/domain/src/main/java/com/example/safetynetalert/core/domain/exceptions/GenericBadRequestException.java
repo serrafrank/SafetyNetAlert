@@ -16,7 +16,11 @@ public class GenericBadRequestException extends RuntimeException {
         super(cause);
     }
 
-    public GenericBadRequestException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    public GenericBadRequestException(
+            String message,
+            Throwable cause,
+            boolean enableSuppression,
+            boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 }

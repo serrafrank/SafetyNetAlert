@@ -1,18 +1,19 @@
 package com.example.safetynetalert.commons.pipelines.query_pipeline;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
-import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class QueryPipelineHandlerTest {
 
     @Test
     void resolvesHandlersWithAGenericRequestType() {
         QueryBus queryBus = new QueryBusImpl()
-            .handlers(() -> Stream.of(new QueryPipelineTypeHandler<>()));
+                .handlers(() -> Stream.of(new QueryPipelineTypeHandler<>()));
         var request = new FooRequest<>(new BarRequest());
 
         String result = queryBus.dispatch(request);
@@ -26,9 +27,9 @@ class QueryPipelineHandlerTest {
         var notAPingHandler = new NotAPingHandler();
 
         QueryBus queryBus = new QueryBusImpl()
-            .handlers(() -> Stream.of(
-                pingHandler,
-                notAPingHandler));
+                .handlers(() -> Stream.of(
+                        pingHandler,
+                        notAPingHandler));
 
         // and
         var ping = new PingRequest();
@@ -42,23 +43,23 @@ class QueryPipelineHandlerTest {
 
         // then
         assertThat(pingHandler.handled).containsOnly(
-            ping.getClass().getSimpleName(),
-            smartPing.getClass().getSimpleName());
+                ping.getClass().getSimpleName(),
+                smartPing.getClass().getSimpleName());
         assertThat(notAPingHandler.handled).containsOnly(notAPing.getClass().getSimpleName());
     }
 
     private record BarRequest()
-        implements Query {
+            implements Query {
 
     }
 
     private record FooRequest<C>(C request)
-        implements Query {
+            implements Query {
 
     }
 
     private static class QueryPipelineTypeHandler<C>
-        extends AbstractQueryHandler<FooRequest<C>, String> {
+            extends AbstractQueryHandler<FooRequest<C>, String> {
 
         @Override
         public String handler(FooRequest<C> request) {
@@ -67,12 +68,12 @@ class QueryPipelineHandlerTest {
     }
 
     private static class PingRequest
-        implements Query {
+            implements Query {
 
     }
 
     private static class PingHandler
-        extends AbstractQueryHandler<PingRequest, List<String>> {
+            extends AbstractQueryHandler<PingRequest, List<String>> {
 
         private final List<String> handled = new ArrayList<>();
 
@@ -84,17 +85,17 @@ class QueryPipelineHandlerTest {
     }
 
     private static class SmartPingRequest
-        extends PingRequest {
+            extends PingRequest {
 
     }
 
     private static class NotAPing
-        implements Query {
+            implements Query {
 
     }
 
     private static class NotAPingHandler
-        extends AbstractQueryHandler<NotAPing, List<String>> {
+            extends AbstractQueryHandler<NotAPing, List<String>> {
 
         private final List<String> handled = new ArrayList<>();
 

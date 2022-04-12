@@ -1,14 +1,11 @@
 package com.example.safetynetalert.commons.pipeline_builder.validators;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import com.example.safetynetalert.commons.pretty_validator.PrettyValidation;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 
-import java.util.Objects;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class PrettyValidationResultTest {
 

@@ -8,15 +8,15 @@ import java.time.LocalDate;
 import java.time.Period;
 
 public record PersonAggregate(
-    String firstName,
-    String lastName,
-    String address,
-    String city,
-    String zip,
-    String phone,
-    String email,
-    LocalDate birthdate,
-    MedicalRecord medicalRecord) {
+        String firstName,
+        String lastName,
+        String address,
+        String city,
+        String zip,
+        String phone,
+        String email,
+        LocalDate birthdate,
+        MedicalRecord medicalRecord) {
 
     public PersonAggregate {
         PrettyValidation.test(firstName).isNot(StringUtils::isBlank).orThrow(BlankArgumentException::new);
@@ -29,7 +29,7 @@ public record PersonAggregate(
 
     public Integer age() {
         return Period.between(birthdate, LocalDate.now())
-            .getYears();
+                .getYears();
     }
 
     public void addMedication(Medication medication) {
@@ -40,8 +40,8 @@ public record PersonAggregate(
         this.medicalRecord.medications().add(new Medication(drug, dose));
     }
 
-    public void addAllergie(String allergie) {
-        this.medicalRecord.allergies().add(allergie);
+    public void addAllergy(String allergy) {
+        this.medicalRecord.allergies().add(allergy);
     }
 
     public boolean isMinor() {

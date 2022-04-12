@@ -20,10 +20,11 @@ public class RestExceptionHandler
     public ResponseEntity<HttpErrorMessage> responseExceptionsHandler(
             GenericBadRequestException exception,
             WebRequest request) {
+
         return new HttpErrorMessage(
                 HttpStatus.BAD_REQUEST,
-                exception.getMessage(),
-                request.getDescription(false))
+                exception,
+                request)
                 .toResponseEntity();
     }
 
@@ -35,8 +36,8 @@ public class RestExceptionHandler
 
         return new HttpErrorMessage(
                 HttpStatus.NOT_FOUND,
-                exception.getMessage(),
-                request.getDescription(false))
+                exception,
+                request)
                 .toResponseEntity();
     }
 
@@ -49,8 +50,8 @@ public class RestExceptionHandler
 
         return new HttpErrorMessage(
                 HttpStatus.INTERNAL_SERVER_ERROR,
-                exception.getMessage(),
-                request.getDescription(false))
+                exception,
+                request)
                 .toResponseEntity();
     }
 }

@@ -12,8 +12,9 @@ public interface PipelineSupplier<TObject> {
 
     Stream<TObject> get();
 
-    default <TSeed> TSeed spread(TSeed seed,
-                                 BiFunction<? super TObject, TSeed, TSeed> accumulator) {
+    default <TSeed> TSeed spread(
+            TSeed seed,
+            BiFunction<? super TObject, TSeed, TSeed> accumulator) {
         var pipeline = new SpreadPipeline<>(this.get());
         return pipeline.spread(seed, accumulator);
     }
@@ -28,15 +29,16 @@ public interface PipelineSupplier<TObject> {
 
         private static <T> Collector<T, ?, List<T>> reverse() {
             return Collectors.collectingAndThen(Collectors.toList(),
-                list -> {
-                    Collections.reverse(
-                        list);
-                    return list;
-                });
+                    list -> {
+                        Collections.reverse(
+                                list);
+                        return list;
+                    });
         }
 
-        private <TSeed> TSeed spread(TSeed seed,
-                                     BiFunction<? super TObject, TSeed, TSeed> accumulator) {
+        private <TSeed> TSeed spread(
+                TSeed seed,
+                BiFunction<? super TObject, TSeed, TSeed> accumulator) {
             TSeed result = seed;
             for (TObject i : list().collect(reverse())) {
                 result = accumulator.apply(i, result);

@@ -24,7 +24,7 @@ public class CucumberTest {
 
     @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
     @ContextConfiguration(classes = {SafetyNetAlertApplication.class,
-        RestTemplateConfig.class}, loader = SpringBootContextLoader.class)
+            RestTemplateConfig.class}, loader = SpringBootContextLoader.class)
     public static class CucumberSpringContextConfiguration {
 
         @Autowired
@@ -53,7 +53,7 @@ public class CucumberTest {
     }
 
     private static class NoOpResponseErrorHandler
-        extends DefaultResponseErrorHandler {
+            extends DefaultResponseErrorHandler {
 
         @Override
         public void handleError(ClientHttpResponse response) {

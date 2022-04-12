@@ -1,14 +1,15 @@
 package com.example.safetynetalert.commons.pipelines.command_pipeline;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import com.example.safetynetalert.commons.pipelines.command_pipeline.exceptions.CommandHandlerNotFoundException;
 import com.example.safetynetalert.commons.pipelines.command_pipeline.exceptions.CommandHasMultipleHandlersException;
+import org.junit.jupiter.api.Test;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.stream.Stream;
-import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class CommandPipelineValidatorsTest {
 
@@ -16,18 +17,18 @@ class CommandPipelineValidatorsTest {
     void supportsAbstractRequestHandlers() {
         // given
         HandlerThatExtendsAbstractClass handlerThatExtendsAbstractClass =
-            new HandlerThatExtendsAbstractClass();
+                new HandlerThatExtendsAbstractClass();
 
         // and
         CommandBus commandBus = new CommandBusImpl()
-            .handlers(() -> Stream.of(handlerThatExtendsAbstractClass));
+                .handlers(() -> Stream.of(handlerThatExtendsAbstractClass));
 
         // when
         commandBus.dispatch(new PingRequest("hi"));
 
         // then:
         assertThat(handlerThatExtendsAbstractClass.receivedPingRequests)
-            .containsOnly(new PingRequest("hi"));
+                .containsOnly(new PingRequest("hi"));
     }
 
     @Test
@@ -38,8 +39,8 @@ class CommandPipelineValidatorsTest {
 
         // and
         CommandBus commandBus = new CommandBusImpl()
-            .handlers(() -> Stream.of(hiHandler,
-                pingSaverHandler));
+                .handlers(() -> Stream.of(hiHandler,
+                        pingSaverHandler));
 
         // when
         commandBus.dispatch(new PingRequest("hi"));
@@ -49,11 +50,11 @@ class CommandPipelineValidatorsTest {
 
         // then
         assertThat(hiHandler.receivedPingRequests)
-            .containsOnly(new PingRequest("hi"));
+                .containsOnly(new PingRequest("hi"));
 
         // and
         assertThat(pingSaverHandler.receivedPingRequests)
-            .containsOnly(new PingRequest("bye"));
+                .containsOnly(new PingRequest("bye"));
     }
 
     @Test
@@ -64,11 +65,11 @@ class CommandPipelineValidatorsTest {
 
         // when
         Throwable e = assertThrows(CommandHandlerNotFoundException.class, () -> commandBus
-            .dispatch(pingRequest));
+                .dispatch(pingRequest));
 
         // then
         assertThat(e)
-            .hasMessage("Cannot find a matching handler for PingRequest command");
+                .hasMessage("Cannot find a matching handler for PingRequest command");
     }
 
     @Test
@@ -76,21 +77,21 @@ class CommandPipelineValidatorsTest {
         // given
         PingRequest pingRequest = new PingRequest();
         CommandBus commandBus = new CommandBusImpl()
-            .handlers(() -> Stream.of(new Pong1Handler(),
-                new Pong2Handler()));
+                .handlers(() -> Stream.of(new Pong1Handler(),
+                        new Pong2Handler()));
 
         // when
         Throwable e = assertThrows(CommandHasMultipleHandlersException.class, () -> commandBus
-            .dispatch(pingRequest));
+                .dispatch(pingRequest));
 
         // then
         assertThat(e)
-            .hasMessage(
-                "Command PingRequest must have a single matching handler, but found 2 (Pong1Handler, Pong2Handler)");
+                .hasMessage(
+                        "Command PingRequest must have a single matching handler, but found 2 (Pong1Handler, Pong2Handler)");
     }
 
     private record PingRequest(String message)
-        implements Command {
+            implements Command {
 
         PingRequest() {
             this("Ping");
@@ -98,7 +99,7 @@ class CommandPipelineValidatorsTest {
     }
 
     private static class PingSaverHandler
-        extends AbstractCommandHandler<PingRequest, String> {
+            extends AbstractCommandHandler<PingRequest, String> {
 
         private final Collection<PingRequest> receivedPingRequests = new ArrayList<>();
 
@@ -115,7 +116,7 @@ class CommandPipelineValidatorsTest {
     }
 
     private static class HiHandler
-        extends AbstractCommandHandler<PingRequest, String> {
+            extends AbstractCommandHandler<PingRequest, String> {
 
         private final Collection<PingRequest> receivedPingRequests = new ArrayList<>();
 
@@ -133,7 +134,7 @@ class CommandPipelineValidatorsTest {
     }
 
     private static class Pong1Handler
-        extends AbstractCommandHandler<PingRequest, String> {
+            extends AbstractCommandHandler<PingRequest, String> {
 
         @Override
         public String handler(PingRequest request) {
@@ -142,7 +143,7 @@ class CommandPipelineValidatorsTest {
     }
 
     private static class Pong2Handler
-        extends AbstractCommandHandler<PingRequest, String> {
+            extends AbstractCommandHandler<PingRequest, String> {
 
         @Override
         public String handler(PingRequest request) {
@@ -151,7 +152,7 @@ class CommandPipelineValidatorsTest {
     }
 
     private static class HandlerThatExtendsAbstractClass
-        extends AbstractCommandHandler<PingRequest, String> {
+            extends AbstractCommandHandler<PingRequest, String> {
 
         private final Collection<PingRequest> receivedPingRequests = new ArrayList<>();
 

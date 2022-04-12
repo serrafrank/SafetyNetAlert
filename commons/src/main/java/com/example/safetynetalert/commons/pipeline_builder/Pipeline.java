@@ -1,6 +1,7 @@
 package com.example.safetynetalert.commons.pipeline_builder;
 
 import com.example.safetynetalert.commons.pipeline_builder.PipelineSupplier.Supply;
+
 import java.util.List;
 import java.util.function.Function;
 
@@ -9,7 +10,7 @@ public interface Pipeline {
     <THandler extends PipelineHandler> Pipeline handlers(Supply<THandler> requestHandlers);
 
     <TMiddleware extends PipelineMiddleware> Pipeline middlewares(
-        Supply<TMiddleware> middlewares);
+            Supply<TMiddleware> middlewares);
 
     <TRequest> Dispatcher submit(TRequest request);
 

@@ -1,14 +1,12 @@
 package com.example.safetynetalert.core.domain.persons.query;
 
-import com.example.safetynetalert.core.domain.exceptions.BlankArgumentException;
-import com.example.safetynetalert.core.domain.exceptions.NullOrEmptyArgumentException;
 import com.example.safetynetalert.commons.pipelines.query_pipeline.Query;
 import com.example.safetynetalert.commons.pretty_validator.PrettyValidation;
-import org.apache.commons.lang3.ObjectUtils;
+import com.example.safetynetalert.core.domain.exceptions.BlankArgumentException;
 
 public record GetPersonByFirstnameAndLastnameQuery(String firstname,
                                                    String lastname)
-    implements Query {
+        implements Query {
 
     public GetPersonByFirstnameAndLastnameQuery {
         PrettyValidation.test(firstname)

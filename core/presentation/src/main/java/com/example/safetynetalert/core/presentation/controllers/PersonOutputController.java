@@ -46,20 +46,20 @@ public class PersonOutputController {
     public Set<ChildByAddressWithFamilyMembersResourse> getChildrenByAddressWithFamilyMembers(@RequestParam("address") String address) {
 
         return queryUseCaser.getChildrenByAddressWithFamilyMembers(address)
-                            .stream().map(ChildByAddressWithFamilyMembersResourse::new)
-                            .collect(Collectors.toSet());
+                .stream().map(ChildByAddressWithFamilyMembersResourse::new)
+                .collect(Collectors.toSet());
     }
 
     @GetMapping("flood/stations")
     public Map<String, Set<PersonWithMedicalRecordsResource>> getFamilyWithMedicalRecordByFirestationNumber(
             @RequestParam("stations") Set<Integer> stations) {
 
-        Set<PersonWithMedicalRecordsValueObject> personsWithMedicalRecords = queryUseCaser.getPersonWithMedicalRecordsByFirestationNumber(
+        Set<PersonWithMedicalRecordsValueObject> personsWithMedicalRecords = queryUseCaser.getPersonWithMedicalRecordsByFireStationNumber(
                 stations);
 
         return personsWithMedicalRecords.stream()
-                                        .collect(groupingBy(PersonWithMedicalRecordsValueObject::address,
-                                                Collectors.mapping(PersonWithMedicalRecordsResource::new,
-                                                        Collectors.toSet())));
+                .collect(groupingBy(PersonWithMedicalRecordsValueObject::address,
+                        Collectors.mapping(PersonWithMedicalRecordsResource::new,
+                                Collectors.toSet())));
     }
 }

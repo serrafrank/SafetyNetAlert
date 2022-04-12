@@ -1,11 +1,12 @@
 package com.example.safetynetalert.commons.pipelines.command_pipeline;
 
 import com.example.safetynetalert.commons.pipelines.event_pipeline.Event;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbstractCommandHandler<TRequest extends Command, TReturn extends Object>
-    implements CommandHandler<TRequest, TReturn> {
+        implements CommandHandler<TRequest, TReturn> {
 
     private final List<Event> events = new ArrayList<>();
 

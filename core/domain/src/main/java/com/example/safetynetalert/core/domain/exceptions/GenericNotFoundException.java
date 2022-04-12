@@ -1,7 +1,7 @@
 package com.example.safetynetalert.core.domain.exceptions;
 
 public class GenericNotFoundException extends
-                                       RuntimeException {
+        RuntimeException {
 
     public GenericNotFoundException() {
         super("Resource cannot be found");

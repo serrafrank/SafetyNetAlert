@@ -1,10 +1,11 @@
 package com.example.safetynetalert.core.presentation.io.output;
 
 import com.example.safetynetalert.core.domain.persons.query.ChildByAddressWithFamilyMembersValueObject;
-import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor
 public final class ChildByAddressWithFamilyMembersResourse {
@@ -26,9 +27,8 @@ public final class ChildByAddressWithFamilyMembersResourse {
         this.lastName = c.lastName();
         this.age = c.age();
         this.familyMembers = c.familyMembers().stream()
-            .map(FamilyMember::new)
-            .collect(
-                Collectors.toSet());
+                .map(FamilyMember::new)
+                .collect(Collectors.toSet());
     }
 
     @NoArgsConstructor

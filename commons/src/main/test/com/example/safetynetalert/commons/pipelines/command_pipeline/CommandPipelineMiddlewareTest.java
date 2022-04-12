@@ -1,12 +1,13 @@
 package com.example.safetynetalert.commons.pipelines.command_pipeline;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
-import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class CommandPipelineMiddlewareTest {
 
@@ -35,17 +36,17 @@ class CommandPipelineMiddlewareTest {
         };
 
         CommandBus commandBus = new CommandBusImpl()
-            .handlers(() -> Stream.of(new ReturnTwoPipelineHandler()))
-            .middlewares(() -> Stream.of(firstMiddleware, secondMiddleware));
+                .handlers(() -> Stream.of(new ReturnTwoPipelineHandler()))
+                .middlewares(() -> Stream.of(firstMiddleware, secondMiddleware));
 
         // when
         String response = commandBus.dispatch(new PingRequest());
 
         // then
         List<String> expectedLogs = List.of("First middleware",
-            "\tSecond middleware",
-            "\tSecond middleware",
-            "First middleware"
+                "\tSecond middleware",
+                "\tSecond middleware",
+                "First middleware"
         );
 
         assertEquals(expectedLogs, logs);
@@ -54,12 +55,12 @@ class CommandPipelineMiddlewareTest {
     }
 
     record PingRequest()
-        implements Command {
+            implements Command {
 
     }
 
     static class ReturnTwoPipelineHandler
-        extends AbstractCommandHandler<PingRequest, String> {
+            extends AbstractCommandHandler<PingRequest, String> {
 
         @Override
         public String handler(PingRequest request) {

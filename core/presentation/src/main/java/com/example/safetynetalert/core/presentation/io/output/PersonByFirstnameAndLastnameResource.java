@@ -2,9 +2,10 @@ package com.example.safetynetalert.core.presentation.io.output;
 
 import com.example.safetynetalert.core.domain.persons.aggregate.Medication;
 import com.example.safetynetalert.core.domain.persons.query.PersonByFirstnameAndLastnameValueObject;
+import lombok.Getter;
+
 import java.util.List;
 import java.util.stream.Collectors;
-import lombok.Getter;
 
 public class PersonByFirstnameAndLastnameResource {
 
@@ -45,9 +46,9 @@ public class PersonByFirstnameAndLastnameResource {
         this.email = person.email();
         this.age = person.age();
         this.medications = person.medications()
-            .stream()
-            .map(Medication::toString)
-            .collect(Collectors.toList());
+                .stream()
+                .map(Medication::toString)
+                .collect(Collectors.toList());
         this.allergies = person.allergies();
     }
 }

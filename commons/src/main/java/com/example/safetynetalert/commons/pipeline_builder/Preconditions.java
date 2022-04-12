@@ -7,8 +7,9 @@ public class Preconditions {
     private Preconditions() {
     }
 
-    public static <TObject> TObject isNotNull(TObject nonNullable,
-                                              String errorMessage) {
+    public static <TObject> TObject isNotNull(
+            TObject nonNullable,
+            String errorMessage) {
         if (Objects.isNull(nonNullable)) {
             throw new IllegalArgumentException(errorMessage);
         }

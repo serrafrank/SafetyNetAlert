@@ -4,12 +4,12 @@ import com.example.safetynetalert.commons.pipelines.query_pipeline.Query;
 import com.example.safetynetalert.commons.pretty_validator.PrettyValidation;
 import com.example.safetynetalert.core.domain.exceptions.NullOrEmptyArgumentException;
 
-public record GetPersonByFirestationQuery(Integer firestationNumber)
+public record GetPersonByFireStationQuery(Integer fireStationNumber)
         implements Query {
 
-    public GetPersonByFirestationQuery {
-        PrettyValidation.test(firestationNumber)
+    public GetPersonByFireStationQuery {
+        PrettyValidation.test(fireStationNumber)
                 .isNotNull()
-                .orThrow(() -> new NullOrEmptyArgumentException("firestationNumber"));
+                .orThrow(() -> new NullOrEmptyArgumentException("fireStationNumber"));
     }
 }

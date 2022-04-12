@@ -54,7 +54,7 @@ public final class PrettyValidation {
 
     public static class PrettyValidationResult<T> extends PrettyValidationCondition<T> {
 
-        protected PrettyValidationResult(T a, Predicate<T> p){
+        protected PrettyValidationResult(T a, Predicate<T> p) {
             super(a, p);
         }
 
