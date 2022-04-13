@@ -4,9 +4,9 @@ import com.example.safetynetalert.commons.pipeline_builder.PipelineSupplier.Supp
 
 public interface EventBus {
 
-    EventBusImpl handlers(Supply<EventHandler<? extends Event, ?>> requestHandlers);
+    EventBusImpl handlers(Supply<EventHandler<? extends Event>> requestHandlers);
 
     EventBusImpl middlewares(Supply<EventMiddleware> middlewares);
 
-    <TRequest extends Event> void dispatch(TRequest request);
+    <E extends Event> void dispatch(E request);
 }

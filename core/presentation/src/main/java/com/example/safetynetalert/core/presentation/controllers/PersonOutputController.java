@@ -1,24 +1,23 @@
 package com.example.safetynetalert.core.presentation.controllers;
 
+import static java.util.stream.Collectors.groupingBy;
+
+import com.example.safetynetalert.commons.exception.GenericNotFoundException;
 import com.example.safetynetalert.core.application.QueryUseCase;
-import com.example.safetynetalert.core.domain.exceptions.GenericNotFoundException;
 import com.example.safetynetalert.core.domain.persons.query.PersonByFirstnameAndLastnameValueObject;
 import com.example.safetynetalert.core.domain.persons.query.PersonWithMedicalRecordsValueObject;
 import com.example.safetynetalert.core.presentation.io.output.ChildByAddressWithFamilyMembersResponse;
 import com.example.safetynetalert.core.presentation.io.output.PersonByFirstnameAndLastnameResponse;
 import com.example.safetynetalert.core.presentation.io.output.PersonWithMedicalRecordsResponse;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.groupingBy;
 
 @RestController
 public class PersonOutputController {

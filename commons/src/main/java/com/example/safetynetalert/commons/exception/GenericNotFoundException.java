@@ -1,4 +1,4 @@
-package com.example.safetynetalert.core.domain.exceptions;
+package com.example.safetynetalert.commons.exception;
 
 public class GenericNotFoundException extends
         RuntimeException {

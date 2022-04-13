@@ -1,12 +1,11 @@
 package com.example.safetynetalert.commons.pipelines.query_pipeline;
 
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Test;
 
 class QueryPipelineHandlerTest {
 
@@ -48,18 +47,29 @@ class QueryPipelineHandlerTest {
         assertThat(notAPingHandler.handled).containsOnly(notAPing.getClass().getSimpleName());
     }
 
-    private record BarRequest()
-            implements Query {
+    private static final class BarRequest
+        extends Query {
 
+        private BarRequest() {
+        }
     }
 
-    private record FooRequest<C>(C request)
-            implements Query {
+    private static final class FooRequest<C>
+        extends Query {
 
+        private final C request;
+
+        private FooRequest(C request) {
+            this.request = request;
+        }
+
+        public C request() {
+            return request;
+        }
     }
 
     private static class QueryPipelineTypeHandler<C>
-            extends AbstractQueryHandler<FooRequest<C>, String> {
+        implements QueryHandler<FooRequest<C>, String> {
 
         @Override
         public String handler(FooRequest<C> request) {
@@ -68,12 +78,12 @@ class QueryPipelineHandlerTest {
     }
 
     private static class PingRequest
-            implements Query {
+            extends Query {
 
     }
 
     private static class PingHandler
-            extends AbstractQueryHandler<PingRequest, List<String>> {
+        implements QueryHandler<PingRequest, List<String>> {
 
         private final List<String> handled = new ArrayList<>();
 
@@ -90,12 +100,12 @@ class QueryPipelineHandlerTest {
     }
 
     private static class NotAPing
-            implements Query {
+            extends Query {
 
     }
 
     private static class NotAPingHandler
-            extends AbstractQueryHandler<NotAPing, List<String>> {
+        implements QueryHandler<NotAPing, List<String>> {
 
         private final List<String> handled = new ArrayList<>();
 

@@ -1,15 +1,14 @@
 package com.example.safetynetalert.core.domain.persons.query;
 
-import com.example.safetynetalert.commons.pipelines.query_pipeline.AbstractQueryHandler;
+import com.example.safetynetalert.commons.pipelines.query_pipeline.QueryHandler;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
-
 @Component
 public class GetPersonByFirstnameAndLastnameQueryHandler
-        extends
-        AbstractQueryHandler<GetPersonByFirstnameAndLastnameQuery, Optional<PersonByFirstnameAndLastnameValueObject>> {
+    implements
+    QueryHandler<GetPersonByFirstnameAndLastnameQuery, Optional<PersonByFirstnameAndLastnameValueObject>> {
 
     private final PersonProjectionRepository repository;
 
@@ -23,7 +22,7 @@ public class GetPersonByFirstnameAndLastnameQueryHandler
             GetPersonByFirstnameAndLastnameQuery query) {
 
         return repository.getPersonByFirstnameAndLastname(
-                query.firstname(),
-                query.lastname());
+                query.getFirstname(),
+                query.getLastname());
     }
 }

@@ -1,7 +1,9 @@
 package com.example.safetynetalert.core.presentation.exceptions;
 
-import com.example.safetynetalert.core.domain.exceptions.GenericBadRequestException;
-import com.example.safetynetalert.core.domain.exceptions.GenericNotFoundException;
+import com.example.safetynetalert.commons.exception.GenericBadRequestException;
+import com.example.safetynetalert.commons.exception.GenericConflictException;
+import com.example.safetynetalert.commons.exception.GenericInternalServerErrorException;
+import com.example.safetynetalert.commons.exception.GenericNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,45 +15,58 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @Slf4j
 @ControllerAdvice
 public class RestExceptionHandler
-        extends ResponseEntityExceptionHandler {
+    extends ResponseEntityExceptionHandler {
 
     // 400
     @ExceptionHandler(GenericBadRequestException.class)
-    public ResponseEntity<HttpErrorMessage> responseExceptionsHandler(
-            GenericBadRequestException exception,
-            WebRequest request) {
+    public ResponseEntity<HttpErrorMessage> badRequestExceptionsHandler(
+        GenericBadRequestException exception,
+        WebRequest request) {
 
         return new HttpErrorMessage(
-                HttpStatus.BAD_REQUEST,
-                exception,
-                request)
-                .toResponseEntity();
+            HttpStatus.BAD_REQUEST,
+            exception,
+            request)
+            .toResponseEntity();
     }
 
     // 404
     @ExceptionHandler(GenericNotFoundException.class)
-    public ResponseEntity<HttpErrorMessage> responseExceptionsHandler(
-            GenericNotFoundException exception,
-            WebRequest request) {
+    public ResponseEntity<HttpErrorMessage> notFoundExceptionsHandler(
+        GenericNotFoundException exception,
+        WebRequest request) {
 
         return new HttpErrorMessage(
-                HttpStatus.NOT_FOUND,
-                exception,
-                request)
-                .toResponseEntity();
+            HttpStatus.NOT_FOUND,
+            exception,
+            request)
+            .toResponseEntity();
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<HttpErrorMessage> handleGeneralException(
-            Exception exception,
-            WebRequest request) {
+    // 409
+    @ExceptionHandler(GenericConflictException.class)
+    public ResponseEntity<HttpErrorMessage> conflitExceptionsHandler(
+        GenericConflictException exception,
+        WebRequest request) {
 
+        return new HttpErrorMessage(
+            HttpStatus.CONFLICT,
+            exception,
+            request)
+            .toResponseEntity();
+    }
+
+    // 409
+    @ExceptionHandler({GenericInternalServerErrorException.class, Exception.class})
+    public ResponseEntity<HttpErrorMessage> internalServerErrorExceptionsHandler(
+        GenericConflictException exception,
+        WebRequest request) {
         log.error("An unexpected exception was thrown", exception);
 
         return new HttpErrorMessage(
-                HttpStatus.INTERNAL_SERVER_ERROR,
-                exception,
-                request)
-                .toResponseEntity();
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            exception,
+            request)
+            .toResponseEntity();
     }
 }

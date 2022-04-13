@@ -17,7 +17,7 @@ public class CommandBusImpl
     private EventBus eventBus;
 
     @Override
-    public CommandBus handlers(Supply<CommandHandler<? extends Command, ?>> commandHandlers) {
+    public CommandBus handlers(Supply<CommandHandler<? extends Command>> commandHandlers) {
         this.genericPipeline.handlers(commandHandlers);
         return this;
     }
@@ -35,27 +35,24 @@ public class CommandBusImpl
     }
 
     @Override
-    public <TCommand extends Command, TReturn> TReturn dispatch(
-            TCommand command) {
+    public <C extends Command> void dispatch(C command) {
         var dispatcher = this.genericPipeline.submit(command)
-                .validate(handlers -> PrettyValidation.test(
-                                handlers)
-                        .is(PipelineValidatorUtil.notEmpty())
-                        .orThrow(() -> new CommandHandlerNotFoundException(
-                                command)))
-                .validate(handlers -> PrettyValidation.test(
-                                handlers)
-                        .is(PipelineValidatorUtil.onlyOne())
-                        .orThrow(() -> new CommandHasMultipleHandlersException(
+            .validate(handlers -> PrettyValidation.test(
+                handlers)
+                .is(PipelineValidatorUtil.notEmpty())
+                .orThrow(() -> new CommandHandlerNotFoundException(
+                    command)))
+            .validate(handlers -> PrettyValidation.test(
+                handlers)
+                .is(PipelineValidatorUtil.onlyOne())
+                .orThrow(() -> new CommandHasMultipleHandlersException(
                                 command,
                                 handlers)));
 
+        dispatcher.dispatch();
         if (eventBus != null) {
-            var handler = (CommandHandler) dispatcher.handler();
-            handler.events()
-                    .forEach(event -> eventBus.dispatch((Event) event));
+            var handler = (AbstractCommandHandler<C>) dispatcher.handler();
+            handler.events().forEach(event -> eventBus.dispatch((Event) event));
         }
-
-        return dispatcher.first();
     }
 }

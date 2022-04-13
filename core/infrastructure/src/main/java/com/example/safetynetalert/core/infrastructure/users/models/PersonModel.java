@@ -40,4 +40,13 @@ public class PersonModel {
         return new PersonAggregate.Id(firstName, lastName);
     }
 
+    public PersonModel(PersonAggregate p) {
+        this.firstName = p.firstName();
+        this.lastName = p.lastName();
+        this.address = p.address();
+        this.city = p.city();
+        this.zip = p.zip();
+        this.phone = p.phone();
+        this.email = p.email();
+    }
 }

@@ -1,5 +1,9 @@
 package com.example.safetynetalert.commons.pipelines.event_pipeline;
 
-public interface Event {
+import com.example.safetynetalert.commons.pipelines.Request;
 
+public class Event extends Request {
+    public Event(Request request) {
+        super(request.getRequestId());
+    }
 }

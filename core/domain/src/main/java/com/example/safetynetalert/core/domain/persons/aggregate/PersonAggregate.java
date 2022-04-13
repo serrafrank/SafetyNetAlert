@@ -2,43 +2,46 @@ package com.example.safetynetalert.core.domain.persons.aggregate;
 
 import com.example.safetynetalert.commons.pretty_validator.PrettyValidation;
 import com.example.safetynetalert.core.domain.exceptions.BlankArgumentException;
-import org.apache.commons.lang3.StringUtils;
-
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 
 public record PersonAggregate(
+    String firstName,
+    String lastName,
+    String address,
+    String city,
+    String zip,
+    String phone,
+    String email,
+    LocalDate birthdate,
+    Medication.MedicalRecord medicalRecord) {
+
+    public PersonAggregate {
+        PrettyValidation.test(firstName)
+            .isNot(StringUtils::isBlank)
+            .orThrow(BlankArgumentException::new);
+        PrettyValidation.test(lastName)
+            .isNot(StringUtils::isBlank)
+            .orThrow(BlankArgumentException::new);
+    }
+
+    public PersonAggregate(
         String firstName,
         String lastName,
         String address,
         String city,
         String zip,
-        String phone,
-        String email,
-        LocalDate birthdate,
-        Medication.MedicalRecord medicalRecord) {
-
-    public PersonAggregate {
-        PrettyValidation.test(firstName).isNot(StringUtils::isBlank).orThrow(BlankArgumentException::new);
-        PrettyValidation.test(lastName).isNot(StringUtils::isBlank).orThrow(BlankArgumentException::new);
-    }
-
-    public PersonAggregate(
-            String firstName,
-            String lastName,
-            String address,
-            String city,
-            String zip,
-            String phone, String email) {
+        String phone, String email) {
         this(firstName, lastName, address, city, zip, phone, email, null, null);
     }
 
     public PersonAggregate(
-            String firstName,
-            String lastName,
-            LocalDate birthdate,
-            Medication.MedicalRecord medicalRecord) {
+        String firstName,
+        String lastName,
+        LocalDate birthdate,
+        Medication.MedicalRecord medicalRecord) {
         this(firstName, lastName, null, null, null, null, null, birthdate, medicalRecord);
     }
 
@@ -47,8 +50,10 @@ public record PersonAggregate(
     }
 
     public Integer age() {
-        return Period.between(birthdate, LocalDate.now())
-                .getYears();
+        return birthdate == null
+               ? null
+               : Period.between(birthdate, LocalDate.now())
+                   .getYears();
     }
 
     public void addMedication(Medication medication) {
@@ -63,17 +68,23 @@ public record PersonAggregate(
         this.medicalRecord.allergies().add(allergy);
     }
 
-    public boolean isMinor() {
-        return age() <= 18;
+    public Boolean isMinor() {
+        return birthdate == null
+               ? null
+               : age() <= 18;
     }
 
     public static record Medication(
-            String drug,
-            String dose) {
+        String drug,
+        String dose) {
 
         public Medication {
-            PrettyValidation.test(drug).isNot(StringUtils::isBlank).orThrow(BlankArgumentException::new);
-            PrettyValidation.test(dose).isNot(StringUtils::isBlank).orThrow(BlankArgumentException::new);
+            PrettyValidation.test(drug)
+                .isNot(StringUtils::isBlank)
+                .orThrow(BlankArgumentException::new);
+            PrettyValidation.test(dose)
+                .isNot(StringUtils::isBlank)
+                .orThrow(BlankArgumentException::new);
         }
 
         public static record MedicalRecord(List<Medication> medications,
@@ -85,7 +96,9 @@ public record PersonAggregate(
     public static record Id(String id) {
 
         public Id {
-            PrettyValidation.test(id).isNot(StringUtils::isBlank).orThrow(BlankArgumentException::new);
+            PrettyValidation.test(id)
+                .isNot(StringUtils::isBlank)
+                .orThrow(BlankArgumentException::new);
         }
 
         public Id(String... elements) {

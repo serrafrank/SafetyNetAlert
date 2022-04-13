@@ -1,13 +1,11 @@
 package com.example.safetynetalert.commons.pipelines.query_pipeline;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
 
 class QueryPipelineMiddlewareTest {
 
@@ -15,38 +13,37 @@ class QueryPipelineMiddlewareTest {
     void executesRequestMiddlewaresInOrder() {
         List<String> logs = new ArrayList<>();
 
-        var firstMiddleware = new record PingRequest()
-                implements Query {
+        var firstMiddleware = new QueryMiddleware() {
+            @Override
+            public <TNext> TNext invoke(Next<TNext> next) {
+                logs.add("First middleware");
+                var requestResponse = next.invoke();
+                logs.add("First middleware");
+                return requestResponse;
+            }
+        };
+
+        var secondMiddleware = new QueryMiddleware() {
+            @Override
+            public <TNext> TNext invoke(Next<TNext> next) {
+                logs.add("\tSecond middleware");
+                var requestResponse = next.invoke();
+                logs.add("\tSecond middleware");
+                return requestResponse;
+            }
+        };
+
+        class PingRequest
+            extends Query {
 
         }
 
-        var secondMiddleware = new
         class ReturnTwoPipelineHandler
-                extends AbstractQueryHandler<PingRequest, String> {
+            implements QueryHandler<PingRequest, String> {
 
             @Override
             public String handler(PingRequest request) {
                 return "Decorated bus execution";
-            }
-        }
-
-        QueryMiddleware() {
-            @Override
-            public <TNext > TNext invoke(Next < TNext > next) {
-                logs.add("First middleware");
-                var requestResponse = next.invoke();
-                logs.add("First middleware");
-                return requestResponse;
-            }
-        }
-
-        QueryMiddleware() {
-            @Override
-            public <TNext > TNext invoke(Next < TNext > next) {
-                logs.add("\tSecond middleware");
-                var requestResponse = next.invoke();
-                logs.add("\tSecond middleware");
-                return requestResponse;
             }
         }
 
@@ -55,8 +52,7 @@ class QueryPipelineMiddlewareTest {
                 .middlewares(() -> Stream.of(firstMiddleware, secondMiddleware));
 
         // when
-        List<String> responseList = queryBus.dispatch(new PingRequest());
-        assertThat(responseList).hasSize(1);
+        String response = queryBus.dispatch(new PingRequest());
 
         // then
         List<String> expectedLogs = List.of("First middleware",
@@ -66,7 +62,7 @@ class QueryPipelineMiddlewareTest {
         );
 
         assertEquals(expectedLogs, logs);
-        assertEquals("Decorated bus execution", responseList.get(0));
+        assertEquals("Decorated bus execution", response);
 
     }
 

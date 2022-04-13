@@ -1,16 +1,23 @@
 package com.example.safetynetalert.core.infrastructure.users.dao;
 
 import com.example.safetynetalert.core.domain.persons.aggregate.PersonAggregate;
-import com.example.safetynetalert.core.domain.persons.query.*;
+import com.example.safetynetalert.core.domain.persons.query.ChildByAddressWithFamilyMembersValueObject;
+import com.example.safetynetalert.core.domain.persons.query.PersonByFireStationValueObject;
+import com.example.safetynetalert.core.domain.persons.query.PersonByFirstnameAndLastnameValueObject;
+import com.example.safetynetalert.core.domain.persons.query.PersonProjectionRepository;
+import com.example.safetynetalert.core.domain.persons.query.PersonWithMedicalRecordsValueObject;
 import com.example.safetynetalert.core.infrastructure.users.models.FireStationModel;
 import com.example.safetynetalert.core.infrastructure.users.models.MedicalRecordModel;
 import com.example.safetynetalert.core.infrastructure.users.models.PersonModel;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 @Repository
 public class PersonProjectionRepositoryJson
@@ -47,8 +54,8 @@ public class PersonProjectionRepositoryJson
     }
 
     @Override
-    public Set<ChildByAddressWithFamilyMembersValueObject> getChildernByAddressWithFamilyMembers(
-            String address) {
+    public Set<ChildByAddressWithFamilyMembersValueObject> getChildrenByAddressWithFamilyMembers(
+        String address) {
 
         var persons = getPersonAggregateByAddress(address).collect(Collectors.toSet());
 

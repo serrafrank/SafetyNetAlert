@@ -1,18 +1,18 @@
 package com.example.safetynetalert.commons.pipelines.query_pipeline.exceptions;
 
+import com.example.safetynetalert.commons.exception.GenericInternalServerErrorException;
 import com.example.safetynetalert.commons.pipeline_builder.PipelineHandler;
 import com.example.safetynetalert.commons.pipelines.query_pipeline.Query;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class QueryHasMultipleHandlersException
-        extends RuntimeException {
+        extends GenericInternalServerErrorException {
 
     private final String message;
 
-    public <TQuery extends Query> QueryHasMultipleHandlersException(
-            TQuery query,
+    public <Q extends Query> QueryHasMultipleHandlersException(
+            Q query,
             List<? extends PipelineHandler> matchingHandlers) {
         String queryName = query.getClass().getSimpleName();
         String handlerNames =

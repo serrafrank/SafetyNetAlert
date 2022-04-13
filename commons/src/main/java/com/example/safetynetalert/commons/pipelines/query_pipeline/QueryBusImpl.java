@@ -33,8 +33,7 @@ public class QueryBusImpl
                         .is(PipelineValidatorUtil.notEmpty())
                         .orThrow(() -> new QueryHandlerNotFoundException(
                                 query)))
-                .validate(handlers -> PrettyValidation.test(
-                                handlers)
+                .validate(handlers -> PrettyValidation.test(handlers)
                         .is(PipelineValidatorUtil.onlyOne())
                         .orThrow(() -> new QueryHasMultipleHandlersException(
                                 query,

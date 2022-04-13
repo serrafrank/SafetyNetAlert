@@ -11,7 +11,7 @@ public interface PersonProjectionRepository {
 
     Set<PersonByFireStationValueObject> getPersonByFireStation(Integer stationNumber);
 
-    Set<ChildByAddressWithFamilyMembersValueObject> getChildernByAddressWithFamilyMembers(String address);
+    Set<ChildByAddressWithFamilyMembersValueObject> getChildrenByAddressWithFamilyMembers(String address);
 
     Set<String> getPersonPhoneNumbersByFireStationNumber(Integer stationNumber);
 

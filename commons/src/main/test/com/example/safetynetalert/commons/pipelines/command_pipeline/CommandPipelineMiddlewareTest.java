@@ -1,13 +1,11 @@
 package com.example.safetynetalert.commons.pipelines.command_pipeline;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
 
 class CommandPipelineMiddlewareTest {
 
@@ -40,7 +38,7 @@ class CommandPipelineMiddlewareTest {
                 .middlewares(() -> Stream.of(firstMiddleware, secondMiddleware));
 
         // when
-        String response = commandBus.dispatch(new PingRequest());
+       commandBus.dispatch(new PingRequest());
 
         // then
         List<String> expectedLogs = List.of("First middleware",
@@ -50,21 +48,19 @@ class CommandPipelineMiddlewareTest {
         );
 
         assertEquals(expectedLogs, logs);
-        assertThat(response).isEqualTo("Decorated bus execution");
 
     }
 
-    record PingRequest()
-            implements Command {
+    static final class PingRequest
+            extends Command {
 
     }
 
     static class ReturnTwoPipelineHandler
-            extends AbstractCommandHandler<PingRequest, String> {
+        extends AbstractCommandHandler<PingRequest> {
 
         @Override
-        public String handler(PingRequest request) {
-            return "Decorated bus execution";
+        public void handler(PingRequest request) {
         }
     }
 

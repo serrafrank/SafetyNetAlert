@@ -1,61 +1,17 @@
 package com.example.safetynetalert.commons.pipelines.query_pipeline;
 
-import com.example.safetynetalert.commons.pipelines.query_pipeline.exceptions.QueryHandlerNotFoundException;
-import com.example.safetynetalert.commons.pipelines.query_pipeline.exceptions.QueryHasMultipleHandlersException;
-import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.stream.Stream;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.example.safetynetalert.commons.pipelines.query_pipeline.exceptions.QueryHandlerNotFoundException;
+import com.example.safetynetalert.commons.pipelines.query_pipeline.exceptions.QueryHasMultipleHandlersException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.stream.Stream;
+import org.junit.jupiter.api.Test;
+
 class QueryPipelineValidatorsTest {
 
-    @Test
-    void supportsAbstractRequestHandlers() {
-        // given
-        HandlerThatExtendsAbstractClass handlerThatExtendsAbstractClass =
-                new HandlerThatExtendsAbstractClass();
-
-        // and
-        QueryBus queryBus = new QueryBusImpl()
-                .handlers(() -> Stream.of(handlerThatExtendsAbstractClass));
-
-        // when
-        queryBus.dispatch(new PingRequest("hi"));
-
-        // then:
-        assertThat(handlerThatExtendsAbstractClass.receivedPingRequests)
-                .containsOnly(new PingRequest("hi"));
-    }
-
-    @Test
-    void supportsCustomHandlerMatching() {
-        // given
-        HiHandler hiHandler = new HiHandler();
-        PingSaverHandler pingSaverHandler = new PingSaverHandler();
-
-        // and
-        QueryBus queryBus = new QueryBusImpl()
-                .handlers(() -> Stream.of(hiHandler,
-                        pingSaverHandler));
-
-        // when
-        queryBus.dispatch(new PingRequest("hi"));
-
-        // and
-        queryBus.dispatch(new PingRequest("bye"));
-
-        // then
-        assertThat(hiHandler.receivedPingRequests)
-                .containsOnly(new PingRequest("hi"));
-
-        // and
-        assertThat(pingSaverHandler.receivedPingRequests)
-                .containsOnly(new PingRequest("bye"));
-    }
 
     @Test
     void throwsIfSentRequestHasNoMatchingHandler() {
@@ -90,16 +46,28 @@ class QueryPipelineValidatorsTest {
                         "Query PingRequest must have a single matching handler, but found 2 (Pong1Handler, Pong2Handler)");
     }
 
-    private record PingRequest(String message)
-            implements Query {
+    private static final class PingRequest
+        extends Query {
+
+        private final String message;
+
+        private PingRequest(String message) {
+            this.message = message;
+        }
 
         PingRequest() {
             this("Ping");
         }
+
+        @Override
+        public String toString() {
+            return "PingRequest[" +
+                   "message=" + message + ']';
+        }
     }
 
     private static class PingSaverHandler
-            extends AbstractQueryHandler<PingRequest, String> {
+        implements QueryHandler<PingRequest, String> {
 
         private final Collection<PingRequest> receivedPingRequests = new ArrayList<>();
 
@@ -116,7 +84,7 @@ class QueryPipelineValidatorsTest {
     }
 
     private static class HiHandler
-            extends AbstractQueryHandler<PingRequest, String> {
+        implements QueryHandler<PingRequest, String> {
 
         private final Collection<PingRequest> receivedPingRequests = new ArrayList<>();
 
@@ -134,7 +102,7 @@ class QueryPipelineValidatorsTest {
     }
 
     private static class Pong1Handler
-            extends AbstractQueryHandler<PingRequest, String> {
+        implements QueryHandler<PingRequest, String> {
 
         @Override
         public String handler(PingRequest request) {
@@ -143,7 +111,7 @@ class QueryPipelineValidatorsTest {
     }
 
     private static class Pong2Handler
-            extends AbstractQueryHandler<PingRequest, String> {
+        implements QueryHandler<PingRequest, String> {
 
         @Override
         public String handler(PingRequest request) {
@@ -151,8 +119,8 @@ class QueryPipelineValidatorsTest {
         }
     }
 
-    private static class HandlerThatExtendsAbstractClass
-            extends AbstractQueryHandler<PingRequest, String> {
+    static class HandlerThatExtendsAbstractClass
+        implements QueryHandler<PingRequest, String> {
 
         private final Collection<PingRequest> receivedPingRequests = new ArrayList<>();
 
@@ -160,6 +128,10 @@ class QueryPipelineValidatorsTest {
         public String handler(PingRequest request) {
             this.receivedPingRequests.add(request);
             return receivedPingRequests.toString();
+        }
+
+        public Collection<PingRequest> getReceivedPingRequests() {
+            return receivedPingRequests;
         }
     }
 }

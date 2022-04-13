@@ -1,15 +1,13 @@
 package com.example.safetynetalert.core.domain.persons.query;
 
-import com.example.safetynetalert.commons.pipelines.query_pipeline.AbstractQueryHandler;
+import com.example.safetynetalert.commons.pipelines.query_pipeline.QueryHandler;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Set;
-
 @Component
 public class GetPersonByFireStationQueryHandler
-        extends
-        AbstractQueryHandler<GetPersonByFireStationQuery, Set<PersonByFireStationValueObject>> {
+    implements QueryHandler<GetPersonByFireStationQuery, Set<PersonByFireStationValueObject>> {
 
     private final PersonProjectionRepository repository;
 
@@ -20,6 +18,6 @@ public class GetPersonByFireStationQueryHandler
 
     @Override
     public Set<PersonByFireStationValueObject> handler(GetPersonByFireStationQuery query) {
-        return repository.getPersonByFireStation(query.fireStationNumber());
+        return repository.getPersonByFireStation(query.getFireStationNumber());
     }
 }

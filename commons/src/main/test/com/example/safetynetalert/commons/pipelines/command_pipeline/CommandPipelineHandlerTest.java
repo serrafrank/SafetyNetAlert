@@ -1,22 +1,24 @@
 package com.example.safetynetalert.commons.pipelines.command_pipeline;
 
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Test;
 
 class CommandPipelineHandlerTest {
 
     @Test
     void resolvesHandlersWithAGenericRequestType() {
+        var handler = new CommandPipelineTypeHandler<>();
         CommandBus commandBus = new CommandBusImpl()
-                .handlers(() -> Stream.of(new CommandPipelineTypeHandler<>()));
+            .handlers(() -> Stream.of(handler));
         var request = new FooRequest<>(new BarRequest());
 
-        String result = commandBus.dispatch(request);
+        commandBus.dispatch(request);
+
+        String result = handler.requestName;
         assertThat(result).isEqualTo("BarRequest");
     }
 
@@ -27,9 +29,9 @@ class CommandPipelineHandlerTest {
         var notAPingHandler = new NotAPingHandler();
 
         CommandBus commandBus = new CommandBusImpl()
-                .handlers(() -> Stream.of(
-                        pingHandler,
-                        notAPingHandler));
+            .handlers(() -> Stream.of(
+                pingHandler,
+                notAPingHandler));
 
         // and
         var ping = new PingRequest();
@@ -43,66 +45,74 @@ class CommandPipelineHandlerTest {
 
         // then
         assertThat(pingHandler.handled).containsOnly(
-                ping.getClass().getSimpleName(),
-                smartPing.getClass().getSimpleName());
+            ping.getClass().getSimpleName(),
+            smartPing.getClass().getSimpleName());
         assertThat(notAPingHandler.handled).containsOnly(notAPing.getClass().getSimpleName());
     }
 
-    private record BarRequest()
-            implements Command {
+    private static final class BarRequest extends Command {
 
     }
 
-    private record FooRequest<C>(C request)
-            implements Command {
+    private static final class FooRequest<C>
+        extends Command {
 
+        private final C request;
+
+        private FooRequest(C request) {
+            this.request = request;
+        }
+
+        public C request() {
+            return request;
+        }
     }
 
     private static class CommandPipelineTypeHandler<C>
-            extends AbstractCommandHandler<FooRequest<C>, String> {
+        extends AbstractCommandHandler<FooRequest<C>> {
+
+        String requestName;
 
         @Override
-        public String handler(FooRequest<C> request) {
-            return request.request().getClass().getSimpleName();
+        public void handler(FooRequest<C> request) {
+            requestName = request.request().getClass().getSimpleName();
         }
     }
 
     private static class PingRequest
-            implements Command {
+        extends Command {
 
     }
 
     private static class PingHandler
-            extends AbstractCommandHandler<PingRequest, List<String>> {
+        extends AbstractCommandHandler<PingRequest> {
 
-        private final List<String> handled = new ArrayList<>();
+        final List<String> handled = new ArrayList<>();
 
         @Override
-        public List<String> handler(PingRequest request) {
+        public void handler(PingRequest request) {
             handled.add(request.getClass().getSimpleName());
-            return handled;
         }
     }
 
     private static class SmartPingRequest
-            extends PingRequest {
+        extends PingRequest {
 
     }
 
     private static class NotAPing
-            implements Command {
+        extends Command {
 
     }
 
     private static class NotAPingHandler
-            extends AbstractCommandHandler<NotAPing, List<String>> {
+        extends AbstractCommandHandler<NotAPing> {
 
         private final List<String> handled = new ArrayList<>();
 
         @Override
-        public List<String> handler(NotAPing request) {
+        public void handler(NotAPing request) {
             handled.add(request.getClass().getSimpleName());
-            return handled;
         }
     }
 }

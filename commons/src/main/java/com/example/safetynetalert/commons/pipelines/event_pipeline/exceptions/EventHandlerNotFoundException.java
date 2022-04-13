@@ -1,14 +1,15 @@
 package com.example.safetynetalert.commons.pipelines.event_pipeline.exceptions;
 
+import com.example.safetynetalert.commons.exception.GenericInternalServerErrorException;
 import com.example.safetynetalert.commons.pipelines.event_pipeline.Event;
 
 public class EventHandlerNotFoundException
-        extends RuntimeException {
+        extends GenericInternalServerErrorException {
 
     private final String eventClass;
 
-    public <TEvent extends Event> EventHandlerNotFoundException(
-            TEvent event) {
+    public <E extends Event> EventHandlerNotFoundException(
+            E event) {
         this.eventClass = event.getClass().getSimpleName();
     }
 

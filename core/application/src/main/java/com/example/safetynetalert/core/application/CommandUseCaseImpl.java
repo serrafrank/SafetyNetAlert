@@ -3,9 +3,11 @@ package com.example.safetynetalert.core.application;
 import com.example.safetynetalert.commons.pipelines.command_pipeline.CommandBus;
 import com.example.safetynetalert.core.domain.persons.command.CreatePersonCommand;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-public class CommandUseCaseImpl implements CommandUseCase{
-
+@Service
+public class CommandUseCaseImpl
+    implements CommandUseCase {
 
     private final CommandBus commandBus;
 
@@ -13,11 +15,25 @@ public class CommandUseCaseImpl implements CommandUseCase{
     public CommandUseCaseImpl(CommandBus commandBus) {
         this.commandBus = commandBus;
     }
-    
+
     @Override
-    public void createPerson() {
-        commandBus.dispatch()
-        new CreatePersonCommand();
+    public void createPerson(String firstName,
+                             String lastName,
+                             String address,
+                             String city,
+                             String zip,
+                             String phone,
+                             String email) {
+
+        var createPersonCommand = new CreatePersonCommand(firstName,
+            lastName,
+            address,
+            city,
+            zip,
+            phone,
+            email);
+
+        commandBus.dispatch(createPersonCommand);
     }
 
     @Override

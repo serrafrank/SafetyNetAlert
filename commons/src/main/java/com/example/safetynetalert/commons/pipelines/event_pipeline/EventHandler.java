@@ -2,8 +2,13 @@ package com.example.safetynetalert.commons.pipelines.event_pipeline;
 
 import com.example.safetynetalert.commons.pipeline_builder.PipelineHandler;
 
-public interface EventHandler<TRequest, TReturn>
-        extends PipelineHandler<TRequest, TReturn> {
+public interface EventHandler<E>
+    extends PipelineHandler<E, Void> {
 
-    TReturn handler(TRequest request);
+    void handler(E request);
+
+    default Void handleRequest(E request) {
+        handler(request);
+        return null;
+    }
 }

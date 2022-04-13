@@ -2,8 +2,12 @@ package com.example.safetynetalert.commons.pipelines.query_pipeline;
 
 import com.example.safetynetalert.commons.pipeline_builder.PipelineHandler;
 
-public interface QueryHandler<TRequest, TReturn>
-        extends PipelineHandler<TRequest, TReturn> {
+public interface QueryHandler<Q, R>
+    extends PipelineHandler<Q, R> {
 
-    TReturn handler(TRequest request);
+    R handler(Q request);
+
+    default R handleRequest(Q request) {
+        return handler(request);
+    }
 }

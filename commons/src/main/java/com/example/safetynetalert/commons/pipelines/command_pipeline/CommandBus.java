@@ -5,11 +5,11 @@ import com.example.safetynetalert.commons.pipelines.event_pipeline.EventBus;
 
 public interface CommandBus {
 
-    CommandBus handlers(Supply<CommandHandler<? extends Command, ?>> requestHandlers);
+    CommandBus handlers(Supply<CommandHandler<? extends Command>> requestHandlers);
 
     CommandBus middlewares(Supply<CommandMiddleware> middlewares);
 
     CommandBus eventBus(EventBus eventBus);
 
-    <TRequest extends Command, TReturn> TReturn dispatch(TRequest request);
+    <C extends Command> void dispatch(C request);
 }
